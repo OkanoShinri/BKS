@@ -68,19 +68,26 @@ private:
 	std::unique_ptr<GameObjectData> private_data;
 	bool is_moving[4] = { false,false,false,false };
 	bool is_slow_move = false;
-	int counter = 0;
-	int rotate_deg = 0;
+	int counter;
+	int rotate_deg;
+	int life;
+	int hit_anime_counter;
 	ofxJoystick joy_;
 
 public:
 	MyShip();
 
-	bool canRemove();
+	bool canRemove() {
+		return private_data->can_remove;
+	}
 	void keyPressed(int key);
 	void keyReleased(int key);
 	void mouseMoved(int x, int y);
 	void update();
 	void draw();
+	void hit() {
+		private_data->is_hit = true;
+	}
 	void setRemoveable() {
 		private_data->can_remove = true;
 	}

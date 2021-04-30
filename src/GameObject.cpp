@@ -225,9 +225,9 @@ bool Brick::canRemove()
 	return private_data->can_remove;
 }
 
-MyShip::MyShip()
+MyShip::MyShip() :
+	counter(0), rotate_deg(0), life(3), hit_anime_counter(0)
 {
-	counter = 0;
 
 	private_data = make_unique<GameObjectData>();
 	private_data->object_type = GameObjectData::myship;
@@ -241,6 +241,17 @@ MyShip::MyShip()
 
 void MyShip::update()
 {
+	if (counter < 1000000) {
+		counter++;
+	}
+	else {
+		counter = 0;
+	}
+
+	if (hit_anime_counter > 0) {
+		hit_anime_counter--;
+	}
+
 	ofVec2f v = private_data->vec;
 
 	if (joy_.isPushing(0) || is_slow_move) {
@@ -277,34 +288,122 @@ void MyShip::update()
 	}
 
 	if (private_data->is_hit) {
-		private_data->can_remove = true;
-	}
-
-	if (counter < 1000000) {
-		counter++;
-	}
-	else {
-		counter = 0;
+		private_data->is_hit = false;
+		if (life == 0)
+		{
+			private_data->can_remove = true;
+			return;
+		}
+		if (hit_anime_counter > 0) {
+			return;
+		}
+		life--;
+		hit_anime_counter = 60;
 	}
 }
 
 void MyShip::draw()
 {
-	ofPushMatrix();
-	ofTranslate(getPosition());
-	ofRotateDeg(rotate_deg);
+	if (private_data->is_hit) ofDrawBitmapString("IsHit", ofGetWidth() / 2, ofGetHeight() - 150);
+	if (life == 3) ofDrawBitmapString("LIFE:3", ofGetWidth() / 2, ofGetHeight() - 100);
+	if (life == 2) ofDrawBitmapString("LIFE:2", ofGetWidth() / 2, ofGetHeight() - 100);
+	if (life == 1) ofDrawBitmapString("LIFE:1", ofGetWidth() / 2, ofGetHeight() - 100);
+
 	ofNoFill();
-	ofDrawRectangle(-15, -15, 30, 30);
-	ofPopMatrix();
-	ofPushMatrix();
-	ofTranslate(getPosition());
-	ofRotateDeg(-rotate_deg);
-	ofDrawRectangle(-21, -21, 42, 42);
-	ofPopMatrix();
 
-	ofDrawCircle(private_data->pos, 15 * 1.4);
-	ofDrawCircle(private_data->pos, 21 * 1.4);
+	if (hit_anime_counter > 0) {
+		if (life == 2)
+		{
+			ofSetColor(30, 30, 30, ofMap(hit_anime_counter, 60, 0, 255, 0));
 
+			ofPushMatrix();
+			ofTranslate(getPosition());
+			ofRotateDeg(rotate_deg);
+			ofDrawRectangle(-21, -21, 42, 42);
+			ofDrawCircle(0, 0, 21 * 1.4);
+			ofPopMatrix();
+
+			ofSetColor(30, 30, 30, 255);
+			ofPushMatrix();
+			ofTranslate(getPosition());
+			ofRotateDeg(-rotate_deg);
+			ofDrawRectangle(-15, -15, 30, 30);
+			ofDrawCircle(0, 0, 15 * 1.4);
+			ofPopMatrix();
+		}
+		if (life == 1)
+		{
+			ofSetColor(30, 30, 30, ofMap(hit_anime_counter, 60, 0, 255, 0));
+
+			ofPushMatrix();
+			ofTranslate(getPosition());
+			ofRotateDeg(-rotate_deg);
+			ofDrawRectangle(-15, -15, 30, 30);
+			ofDrawCircle(0, 0, 15 * 1.4);
+			ofPopMatrix();
+
+			ofSetColor(30, 30, 30, 255);
+		}
+	}
+	else {
+		ofSetColor(30, 30, 30);
+		if (life == 3)
+		{
+			ofPushMatrix();
+			ofTranslate(getPosition());
+			ofRotateDeg(rotate_deg);
+			ofDrawRectangle(-21, -21, 42, 42);
+			ofDrawCircle(0, 0, 21 * 1.4);
+			ofPopMatrix();
+
+			ofPushMatrix();
+			ofTranslate(getPosition());
+			ofRotateDeg(-rotate_deg);
+			ofDrawRectangle(-15, -15, 30, 30);
+			ofDrawCircle(0, 0, 15 * 1.4);
+			ofPopMatrix();
+		}
+		if (life == 2)
+		{
+			ofPushMatrix();
+			ofTranslate(getPosition());
+			ofRotateDeg(-rotate_deg);
+			ofDrawRectangle(-15, -15, 30, 30);
+			ofDrawCircle(0, 0, 15 * 1.4);
+			ofPopMatrix();
+		}
+	}
+
+	/*
+	if (life > 2) {
+		if (hit_anime_counter > 0) {
+			ofSetColor(30, 30, 30, ofMap(hit_anime_counter, 60, 0, 255, 0));
+		}
+		ofPushMatrix();
+		ofTranslate(getPosition());
+		ofRotateDeg(rotate_deg);
+		ofDrawRectangle(-21, -21, 42, 42);
+		ofDrawCircle(0, 0, 21 * 1.4);
+		ofPopMatrix();
+	}
+
+	if (life > 1) {
+		if ((life == 2) && (hit_anime_counter > 0)) {
+			ofSetColor(30, 30, 30, ofMap(hit_anime_counter, 60, 0, 255, 0));
+		}
+		else
+		{
+			ofSetColor(30, 30, 30, 255);
+		}
+		ofPushMatrix();
+		ofTranslate(getPosition());
+		ofRotateDeg(-rotate_deg);	
+		ofDrawRectangle(-15, -15, 30, 30);
+		
+		ofPopMatrix();
+	}
+	*/
+	
 	ofFill();
 	ofDrawCircle(private_data->pos, 5.0);
 
@@ -325,10 +424,7 @@ ofVec2f MyShip::getPosition()
 	return private_data->pos;
 }
 
-bool MyShip::canRemove()
-{
-	return private_data->can_remove;
-}
+
 
 void MyShip::keyPressed(int key)
 {

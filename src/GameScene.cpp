@@ -158,9 +158,11 @@ void GameScene::update()
 
 	//-------myship update------------
 	this->myShip->update();
-	if (this->myShip->canRemove()) {
-		this->can_change_scene = true;
+	if (myShip->canRemove()) {
+		is_transiting = true;
+		//3transition_counter = 0;
 	}
+
 
 	this->counter++;
 }
@@ -238,7 +240,7 @@ void GameScene::draw()
 		float y2 = myShip->getPosition().y;
 		float r = (*it)->getRadius();
 		if ((x1 - x2)*(x1 - x2) + (y1 - y2)*(y1 - y2) < r*r) {
-			is_transiting = true;
+			myShip->hit();
 		}
 
 		if ((*it)->canRemove())
