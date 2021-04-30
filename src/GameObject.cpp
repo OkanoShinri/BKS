@@ -304,7 +304,7 @@ void MyShip::update()
 
 void MyShip::draw()
 {
-	if (private_data->is_hit) ofDrawBitmapString("IsHit", ofGetWidth() / 2, ofGetHeight() - 150);
+	if (private_data->is_hit) ofDrawBitmapString("Hit", ofGetWidth() / 2, ofGetHeight() - 150);
 	if (life == 3) ofDrawBitmapString("LIFE:3", ofGetWidth() / 2, ofGetHeight() - 100);
 	if (life == 2) ofDrawBitmapString("LIFE:2", ofGetWidth() / 2, ofGetHeight() - 100);
 	if (life == 1) ofDrawBitmapString("LIFE:1", ofGetWidth() / 2, ofGetHeight() - 100);
@@ -314,7 +314,7 @@ void MyShip::draw()
 	if (hit_anime_counter > 0) {
 		if (life == 2)
 		{
-			ofSetColor(30, 30, 30, ofMap(hit_anime_counter, 60, 0, 255, 0));
+			ofSetColor(ofMap(hit_anime_counter, 60, 0, 255, 30), 30, 30, ofMap(hit_anime_counter, 60, 0, 255, 0));
 
 			ofPushMatrix();
 			ofTranslate(getPosition());
@@ -333,7 +333,7 @@ void MyShip::draw()
 		}
 		if (life == 1)
 		{
-			ofSetColor(30, 30, 30, ofMap(hit_anime_counter, 60, 0, 255, 0));
+			ofSetColor(ofMap(hit_anime_counter, 60, 0, 255, 30), 30, 30, ofMap(hit_anime_counter, 60, 0, 255, 0));
 
 			ofPushMatrix();
 			ofTranslate(getPosition());
@@ -404,6 +404,9 @@ void MyShip::draw()
 	}
 	*/
 	
+	if (life == 0) {
+		ofSetColor(255, 30, 30);
+	}
 	ofFill();
 	ofDrawCircle(private_data->pos, 5.0);
 
