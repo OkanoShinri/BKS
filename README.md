@@ -6,8 +6,13 @@
 - bin - 実行ファイル
 - ReadMe - これ
 
-使用アドオン：
+***
 
+ソースコード使う人へ
+
+openFrameworksを使っています。
+
+使用アドオン：
 - ofxbox2d https://github.com/vanderlin/ofxBox2d
 - ofxJoystick https://github.com/Lacty/ofxJoystick
 
