@@ -41,6 +41,8 @@ GameScene::GameScene()
 	}
 	this->active_bullets.clear();
 
+	back_ground = std::make_unique<BackGroundImage>();
+
 	this->wall_hit_se = std::make_unique<ofSoundPlayer>();
 	wall_hit_se->load("se01.mp3");
 	this->wall_hit_se->setMultiPlay(true);
@@ -163,14 +165,17 @@ void GameScene::update()
 		//3transition_counter = 0;
 	}
 
+
+	//-------back ground------------
+	back_ground->updata();
+
 	this->counter++;
 }
 
 void GameScene::draw()
 {
-	//-------back ground---------------
-	ofSetColor(255, 255, 255);
-	ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+	//-------back ground------------
+	back_ground->draw();
 
 	//-------bricks update&draw--------
 	ofSetColor(255, 100, 100);

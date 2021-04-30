@@ -76,7 +76,7 @@ private:
 	std::unique_ptr<ofSoundPlayer> hit_se;
 public:
 	MyShip();
-	~MyShip() { std::cout << "Remove: GameScene" << std::endl; }
+	~MyShip() { std::cout << "Remove: MyShip" << std::endl; }
 
 	bool canRemove() {
 		return private_data->can_remove;

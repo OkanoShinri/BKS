@@ -2,6 +2,7 @@
 
 #include "Scene.h"
 #include "GameObject.h"
+#include "BackGroundImage.h"
 
 constexpr auto MAX_BULLETS_NUM = 2000;
 
@@ -32,6 +33,7 @@ private:
 	std::shared_ptr<ofxBox2d> box2d_for_shooting;
 
 	std::unique_ptr<ofSoundPlayer> game_bgm, wall_hit_se, brick_hit_se, shot_se;
+	std::unique_ptr<BackGroundImage> back_ground;
 
 	int counter = 0;
 
