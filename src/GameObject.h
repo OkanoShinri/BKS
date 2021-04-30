@@ -73,9 +73,10 @@ private:
 	int life;
 	int hit_anime_counter;
 	ofxJoystick joy_;
-
+	std::unique_ptr<ofSoundPlayer> hit_se;
 public:
 	MyShip();
+	~MyShip() { std::cout << "Remove: GameScene" << std::endl; }
 
 	bool canRemove() {
 		return private_data->can_remove;

@@ -9,6 +9,5 @@ int main() {
 	ofSetVerticalSync(false);
 	ofSetFrameRate(60);
 
-
 	ofRunApp(new ofApp());
 }

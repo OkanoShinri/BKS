@@ -69,7 +69,7 @@ GameScene::~GameScene()
 std::unique_ptr<Brick> GameScene::brickFactory(int _id, float _v_y = 0.5)
 {
 	float init_y;
-	if (_v_y<0) {
+	if (_v_y < 0) {
 		init_y = ofGetHeight() + 50;
 	}
 	else {
@@ -82,23 +82,23 @@ std::unique_ptr<Brick> GameScene::brickFactory(int _id, float _v_y = 0.5)
 	{
 		return std::make_unique<Brick>(this->box2d_for_breakout->getWorld(), ofRandom(ofGetWidth() / 3, ofGetWidth() * 2 / 3), init_y, 30, 30, _v_y);
 	}
-		break;
-	
+	break;
+
 	case 1:
 	{
 		std::unique_ptr<NWayBrick_1> b = std::make_unique<NWayBrick_1>(this->box2d_for_breakout->getWorld(), ofRandom(ofGetWidth() / 3, ofGetWidth() * 2 / 3), init_y, 30, 30, _v_y);
 		b->setNWay(16);
 		return b;
 	}
-		break;
-	
+	break;
+
 	case 2:
 	{
 		std::unique_ptr<NWayBrick_2> b = std::make_unique<NWayBrick_2>(this->box2d_for_breakout->getWorld(), ofRandom(ofGetWidth() / 3, ofGetWidth() * 2 / 3), init_y, 30, 30, _v_y);
 		b->setNWay(12);
 		return b;
 	}
-		break;
+	break;
 
 	case 3:
 	{
@@ -106,13 +106,13 @@ std::unique_ptr<Brick> GameScene::brickFactory(int _id, float _v_y = 0.5)
 		b->setNWay(12);
 		return b;
 	}
-		break;
-	
+	break;
+
 	case 4:
 	{
 		return std::make_unique<Jikinerai_Brick>(this->box2d_for_breakout->getWorld(), ofRandom(ofGetWidth() / 3, ofGetWidth() * 2 / 3), init_y, 30, 30, _v_y);
 	}
-		break;
+	break;
 	default:
 		return std::make_unique<Brick>(this->box2d_for_breakout->getWorld(), ofRandom(ofGetWidth() / 3, ofGetWidth() * 2 / 3), init_y, 200, 50, _v_y);
 		break;
@@ -162,7 +162,6 @@ void GameScene::update()
 		is_transiting = true;
 		//3transition_counter = 0;
 	}
-
 
 	this->counter++;
 }

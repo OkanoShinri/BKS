@@ -65,7 +65,6 @@ void Bullet::set(const std::shared_ptr<BulletData>& _data)
 	pos1 = ofVec2f(private_data->r*sinf(angle), private_data->r*cosf(angle));
 	pos2 = ofVec2f(private_data->r*sinf(angle + 2 * PI / 3), private_data->r*cosf(angle + 2 * PI / 3));
 	pos3 = ofVec2f(private_data->r*sinf(angle - 2 * PI / 3), private_data->r*cosf(angle - 2 * PI / 3));
-
 }
 
 Bullet::~Bullet()
@@ -121,12 +120,11 @@ void Bullet::draw()
 		ofFill();
 		break;
 		break;
-	}	
+	}
 }
 
 void Bullet::update()
 {
-
 	if (counter < wait_time) {
 		this->counter++;
 		return;
@@ -178,7 +176,7 @@ void Brick::makeBullet()
 {
 	float speed = 4.0;
 	for (int i = 0; i < 16; i++)
-	{	
+	{
 		bullets.emplace_back(std::make_shared<BulletData>(getPosition(), ofVec2f(speed*cosf(2.0*PI*i / 16), speed*sinf(2.0 * PI*i / 16)), 10, 0));
 	}
 }
@@ -228,7 +226,6 @@ bool Brick::canRemove()
 MyShip::MyShip() :
 	counter(0), rotate_deg(0), life(3), hit_anime_counter(0)
 {
-
 	private_data = make_unique<GameObjectData>();
 	private_data->object_type = GameObjectData::myship;
 	private_data->is_hit = false;
@@ -237,6 +234,10 @@ MyShip::MyShip() :
 	private_data->vec = ofVec2f(5, 5);
 
 	joy_.setup(GLFW_JOYSTICK_1);
+
+	this->hit_se = std::make_unique<ofSoundPlayer>();
+	hit_se->load("hitse01.mp3");
+	this->hit_se->setMultiPlay(true);
 }
 
 void MyShip::update()
@@ -288,6 +289,7 @@ void MyShip::update()
 	}
 
 	if (private_data->is_hit) {
+		hit_se->play();
 		private_data->is_hit = false;
 		if (life == 0)
 		{
@@ -374,36 +376,6 @@ void MyShip::draw()
 		}
 	}
 
-	/*
-	if (life > 2) {
-		if (hit_anime_counter > 0) {
-			ofSetColor(30, 30, 30, ofMap(hit_anime_counter, 60, 0, 255, 0));
-		}
-		ofPushMatrix();
-		ofTranslate(getPosition());
-		ofRotateDeg(rotate_deg);
-		ofDrawRectangle(-21, -21, 42, 42);
-		ofDrawCircle(0, 0, 21 * 1.4);
-		ofPopMatrix();
-	}
-
-	if (life > 1) {
-		if ((life == 2) && (hit_anime_counter > 0)) {
-			ofSetColor(30, 30, 30, ofMap(hit_anime_counter, 60, 0, 255, 0));
-		}
-		else
-		{
-			ofSetColor(30, 30, 30, 255);
-		}
-		ofPushMatrix();
-		ofTranslate(getPosition());
-		ofRotateDeg(-rotate_deg);	
-		ofDrawRectangle(-15, -15, 30, 30);
-		
-		ofPopMatrix();
-	}
-	*/
-	
 	if (life == 0) {
 		ofSetColor(255, 30, 30);
 	}
@@ -426,8 +398,6 @@ ofVec2f MyShip::getPosition()
 {
 	return private_data->pos;
 }
-
-
 
 void MyShip::keyPressed(int key)
 {
