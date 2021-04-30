@@ -1,0 +1,10 @@
+.git
+.vs
+obj/*
+*debug*
+*.exp
+*.make
+*.sln
+*.vc*
+*.aps
+*.rc

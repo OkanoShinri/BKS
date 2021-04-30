@@ -1,0 +1,24 @@
+bgm01
+https://dova-s.jp/bgm/play2969.html
+金木犀
+https://commons.nicovideo.jp/material/nc43122
+夜間航海
+https://dova-s.jp/bgm/play4665.html
+紫苑 -追憶-
+https://dova-s.jp/bgm/play3969.html
+クロスロード
+https://dova-s.jp/bgm/play8219.html
+ムスカリの花
+
+
+se01
+https://soundeffect-lab.info/sound/button/
+決定、ボタン押下2
+
+se02
+https://soundeffect-lab.info/sound/button/
+決定、ボタン押下44
+
+shotse01
+https://soundeffect-lab.info/sound/button/
+カーソル移動3
