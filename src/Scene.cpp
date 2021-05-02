@@ -1,7 +1,14 @@
 #include "Scene.h"
 
-TitleScene::TitleScene()
+QuitScene::QuitScene(std::shared_ptr<SettingParameter> _setting_parameter)
 {
+	setting_parameter = _setting_parameter;
+}
+
+TitleScene::TitleScene(std::shared_ptr<SettingParameter> _setting_parameter)
+{
+	setting_parameter = _setting_parameter;
+
 	this->nextScene = Scene::play_game_scene;
 	this->choice = TitleScene::play;
 	this->can_change_scene = false;
@@ -102,3 +109,4 @@ void TitleScene::keyPressed(int key) {
 		break;
 	}
 }
+

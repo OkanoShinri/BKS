@@ -10,7 +10,7 @@ class GameScene :
 	public Scene
 {
 public:
-	GameScene();
+	GameScene(std::shared_ptr<SettingParameter> _setting_parameter);
 	~GameScene();
 	std::shared_ptr<SettingParameter> getSettingParameter() {
 		return setting_parameter;

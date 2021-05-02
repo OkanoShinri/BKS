@@ -32,6 +32,7 @@ public:
 
 class QuitScene :public Scene {
 public:
+	QuitScene(std::shared_ptr<SettingParameter> _setting_parameter);
 	void update() { std::exit(0); };
 	void draw() {};
 	std::shared_ptr<SettingParameter> getSettingParameter() {
@@ -43,7 +44,7 @@ private:
 
 class TitleScene :public Scene {
 public:
-	TitleScene();
+	TitleScene(std::shared_ptr<SettingParameter> _setting_parameter);
 	~TitleScene();
 	std::shared_ptr<SettingParameter> getSettingParameter() {
 		return setting_parameter;

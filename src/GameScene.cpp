@@ -1,7 +1,9 @@
 #include "GameScene.h"
 
-GameScene::GameScene()
+GameScene::GameScene(std::shared_ptr<SettingParameter> _setting_parameter)
 {
+	setting_parameter = _setting_parameter;
+
 	this->box2d_for_breakout = std::make_shared<ofxBox2d>();
 	this->box2d_for_breakout->init();
 	this->box2d_for_breakout->enableEvents();
@@ -60,6 +62,7 @@ GameScene::GameScene()
 	int idx = std::rand() % 2;
 	game_bgm->load(bgms[idx]);
 	game_bgm->setLoop(true);
+	game_bgm->setVolume(setting_parameter->getBGMVolume());
 	game_bgm->play();
 }
 
@@ -124,7 +127,7 @@ std::unique_ptr<Brick> GameScene::brickFactory(int _id, float _v_y = 0.5)
 void GameScene::update()
 {
 	if (is_transiting) {
-		game_bgm->setVolume(ofMap(transition_counter, 0.0, transition_time, 1.0, 0.0));
+		game_bgm->setVolume(ofMap(transition_counter, 0.0, transition_time, setting_parameter->getBGMVolume(), 0.0));
 
 		if (transition_counter < transition_time) {
 			transition_counter++;
