@@ -53,7 +53,7 @@ GameScene::GameScene()
 
 	this->shot_se = std::make_unique<ofSoundPlayer>();
 	shot_se->load("shotse01.mp3");
-	this->shot_se->setMultiPlay(true);
+	//this->shot_se->setMultiPlay(true);
 
 	this->game_bgm = std::make_unique<ofSoundPlayer>();
 	std::string bgms[] = { "‡‰‘_-’Ç‰¯-_2.mp3","ƒ€ƒXƒJƒŠ‚Ì‰Ô.mp3" };
@@ -124,7 +124,7 @@ std::unique_ptr<Brick> GameScene::brickFactory(int _id, float _v_y = 0.5)
 void GameScene::update()
 {
 	if (is_transiting) {
-		game_bgm->setVolume(ofMap(transition_counter, 0, transition_time, 1.0, 0.0));
+		game_bgm->setVolume(ofMap(transition_counter, 0.0, transition_time, 1.0, 0.0));
 
 		if (transition_counter < transition_time) {
 			transition_counter++;
@@ -226,16 +226,14 @@ void GameScene::draw()
 	}
 
 	//-------bullets update&draw------
-	bool is_play_shotse = false;
 	ofSetColor(10, 10, 10);
 	for (auto it = this->active_bullets.begin(); it != this->active_bullets.end();)
 	{
 		(*it)->update();
 
-		if ((*it)->play_shotse && !is_play_shotse)
+		if ((*it)->play_shotse && !shot_se->isPlaying())
 		{
 			shot_se->play();
-			is_play_shotse = true;
 		}
 
 		float x1 = (*it)->getPosition().x;

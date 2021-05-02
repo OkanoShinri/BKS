@@ -1,6 +1,7 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxJoystick.h"
+#include "SettingParameter.h"
 #include <iostream>
 #include <memory>
 #include <list>
@@ -10,16 +11,17 @@ public:
 	enum SceneIdx { quit_game_scene = 0, title_scene, play_game_scene };
 
 	virtual ~Scene() {};
-	virtual void update() {};
+	virtual std::shared_ptr<SettingParameter> getSettingParameter() = 0;
 	virtual void draw() {};
+	virtual void feadout(int mun) {};
 	virtual void keyPressed(int key) {};
 	virtual void keyReleased(int key) {};
-	virtual void mouseMoved(int x, int y) {};
 	virtual void mouseDragged(int x, int y, int button) {};
+	virtual void mouseMoved(int x, int y) {};
 	virtual void mousePressed(int x, int y, int button) {};
 	virtual void mouseReleased(int x, int y, int button) {};
+	virtual void update() {};
 	virtual void windowResized(int w, int h) {};
-	virtual void feadout(int mun) {};
 
 	int transition_counter = 0;
 	int transition_time = 0;
@@ -29,15 +31,23 @@ public:
 };
 
 class QuitScene :public Scene {
-private:
+public:
 	void update() { std::exit(0); };
 	void draw() {};
+	std::shared_ptr<SettingParameter> getSettingParameter() {
+		return setting_parameter;
+	}
+private:
+	std::shared_ptr<SettingParameter> setting_parameter;
 };
 
 class TitleScene :public Scene {
 public:
 	TitleScene();
 	~TitleScene();
+	std::shared_ptr<SettingParameter> getSettingParameter() {
+		return setting_parameter;
+	}
 private:
 	void update();
 	void draw();
@@ -45,8 +55,8 @@ private:
 	void feadout(int mun) {};
 
 	enum TitleChoiceIdx { play = 0, quit };
-	TitleChoiceIdx choice;
-
 	ofTrueTypeFont verdana;
 	ofxJoystick joy_;
+	std::shared_ptr<SettingParameter> setting_parameter;
+	TitleChoiceIdx choice;
 };
