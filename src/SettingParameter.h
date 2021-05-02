@@ -15,18 +15,18 @@ public:
 	};
 	void set(bool _is_paddle_mode_on, bool _is_window_mode_on, float _bgm_volume, float _se_volume, int _myship_life);
 	void setBGMVolume(float _bgm_volume) {
-		this->bgm_volume = _bgm_volume;
+		bgm_volume = _bgm_volume;
 	}
 	float getWidth() {
-		return this->window_width;
+		return window_width;
 	}
 	float getHeight() {
-		return this->window_height;
+		return window_height;
 	}
 	float getBGMVolume() {
-		return this->bgm_volume;
+		return bgm_volume;
 	}
 	bool isWindowMode() {
-		return this->is_windowmode;
+		return is_windowmode;
 	}
 };

@@ -10,10 +10,10 @@ class GameScene :
 	public Scene
 {
 public:
-	GameScene(std::shared_ptr<SettingParameter> _setting_parameter);
+	GameScene(std::unique_ptr<SettingParameter> _setting_parameter);
 	~GameScene();
-	std::shared_ptr<SettingParameter> getSettingParameter() {
-		return setting_parameter;
+	std::unique_ptr<SettingParameter> getSettingParameter() {
+		return std::move(setting_parameter);
 	}
 
 private:
@@ -27,7 +27,7 @@ private:
 	void mouseMoved(int x, int y);
 	void update();
 
-	bool activate_paddle = false;
+	//bool activate_paddle = false;
 	int counter = 0;
 	std::list< std::shared_ptr<Bullet> > active_bullets;
 	std::list< std::shared_ptr<Bullet> > non_active_bullets;
@@ -35,7 +35,7 @@ private:
 	std::list< std::unique_ptr<Brick> > bricks;
 	std::shared_ptr<ofxBox2d> box2d_for_breakout;
 	std::shared_ptr<ofxBox2d> box2d_for_shooting;
-	std::shared_ptr<SettingParameter> setting_parameter;
+	std::unique_ptr<SettingParameter> setting_parameter;
 	std::unique_ptr<BackGroundImage> back_ground;
 	std::unique_ptr<MyShip> myShip;
 	std::unique_ptr<ofSoundPlayer> game_bgm, wall_hit_se, brick_hit_se, shot_se;

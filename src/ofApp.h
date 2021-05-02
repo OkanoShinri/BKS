@@ -10,7 +10,7 @@
 class ofApp : public ofBaseApp {
 private:
 	std::unique_ptr<Scene> current_scene;
-	std::shared_ptr<SettingParameter> setting_parameter = std::make_shared<SettingParameter>();
+	std::unique_ptr<SettingParameter> setting_parameter = std::make_unique<SettingParameter>();
 
 public:
 	void setup();

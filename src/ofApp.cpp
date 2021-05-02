@@ -9,6 +9,8 @@ void ofApp::setup() {
 //--------------------------------------------------------------
 void ofApp::update() {
 	if (this->current_scene->can_change_scene) {
+		setting_parameter.reset();
+		setting_parameter = std::move(current_scene->getSettingParameter());
 		Scene::SceneIdx next = current_scene->nextScene;
 		this->current_scene.reset();
 		this->current_scene = sceneFactory(next);
@@ -75,14 +77,14 @@ std::unique_ptr<Scene> ofApp::sceneFactory(Scene::SceneIdx idx)
 	switch (idx)
 	{
 	case Scene::quit_game_scene:
-		return std::make_unique<QuitScene>(setting_parameter);
+		return std::make_unique<QuitScene>(std::move(setting_parameter));
 		break;
 	case Scene::title_scene:
-		return std::make_unique<TitleScene>(setting_parameter);
+		return std::make_unique<TitleScene>(std::move(setting_parameter));
 		break;
 	case Scene::play_game_scene:
-		return std::make_unique<GameScene>(setting_parameter);
+		return std::make_unique<GameScene>(std::move(setting_parameter));
 		break;
 	}
-	return std::make_unique<QuitScene>(setting_parameter);
+	return std::make_unique<QuitScene>(std::move(setting_parameter));
 }

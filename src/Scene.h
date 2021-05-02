@@ -11,7 +11,7 @@ public:
 	enum SceneIdx { quit_game_scene = 0, title_scene, play_game_scene };
 
 	virtual ~Scene() {};
-	virtual std::shared_ptr<SettingParameter> getSettingParameter() = 0;
+	virtual std::unique_ptr<SettingParameter> getSettingParameter() = 0;
 	virtual void draw() {};
 	virtual void feadout(int mun) {};
 	virtual void keyPressed(int key) {};
@@ -32,22 +32,22 @@ public:
 
 class QuitScene :public Scene {
 public:
-	QuitScene(std::shared_ptr<SettingParameter> _setting_parameter);
+	QuitScene(std::unique_ptr<SettingParameter> _setting_parameter);
 	void update() { std::exit(0); };
 	void draw() {};
-	std::shared_ptr<SettingParameter> getSettingParameter() {
-		return setting_parameter;
+	std::unique_ptr<SettingParameter> getSettingParameter() {
+		return std::move(setting_parameter);
 	}
 private:
-	std::shared_ptr<SettingParameter> setting_parameter;
+	std::unique_ptr<SettingParameter> setting_parameter;
 };
 
 class TitleScene :public Scene {
 public:
-	TitleScene(std::shared_ptr<SettingParameter> _setting_parameter);
+	TitleScene(std::unique_ptr<SettingParameter> _setting_parameter);
 	~TitleScene();
-	std::shared_ptr<SettingParameter> getSettingParameter() {
-		return setting_parameter;
+	std::unique_ptr<SettingParameter> getSettingParameter() {
+		return std::move(setting_parameter);
 	}
 private:
 	void update();
@@ -58,6 +58,6 @@ private:
 	enum TitleChoiceIdx { play = 0, quit };
 	ofTrueTypeFont verdana;
 	ofxJoystick joy_;
-	std::shared_ptr<SettingParameter> setting_parameter;
+	std::unique_ptr<SettingParameter> setting_parameter;
 	TitleChoiceIdx choice;
 };

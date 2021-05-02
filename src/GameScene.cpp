@@ -1,8 +1,8 @@
 #include "GameScene.h"
 
-GameScene::GameScene(std::shared_ptr<SettingParameter> _setting_parameter)
+GameScene::GameScene(std::unique_ptr<SettingParameter> _setting_parameter)
 {
-	setting_parameter = _setting_parameter;
+	setting_parameter = std::move(_setting_parameter);
 
 	this->box2d_for_breakout = std::make_shared<ofxBox2d>();
 	this->box2d_for_breakout->init();
@@ -21,12 +21,12 @@ GameScene::GameScene(std::shared_ptr<SettingParameter> _setting_parameter)
 
 	this->myShip = std::make_unique<MyShip>();
 
-	if (activate_paddle) {
-		this->myPaddle = std::make_unique<ofxBox2dRect>();
-		this->myPaddle->setPhysics(1.0, 1.0, 0.0);
-		this->myPaddle->setup(this->box2d_for_breakout->getWorld(), myShip->getPosition().x - 100, myShip->getPosition().y - 25, 200, 50);
-		this->myPaddle->setFixedRotation(true);
-	}
+	/*paddle
+	this->myPaddle = std::make_unique<ofxBox2dRect>();
+	this->myPaddle->setPhysics(1.0, 1.0, 0.0);
+	this->myPaddle->setup(this->box2d_for_breakout->getWorld(), myShip->getPosition().x - 100, myShip->getPosition().y - 25, 200, 50);
+	this->myPaddle->setFixedRotation(true);
+	*/
 
 	this->balls.clear();
 
@@ -220,13 +220,9 @@ void GameScene::draw()
 	}
 
 	//-------paddle update&draw-------
-	if (activate_paddle) {
-		this->myPaddle->setPosition(this->myShip->getPosition());
-	}
-
-	if (activate_paddle) {
-		this->myPaddle->draw();
-	}
+	//this->myPaddle->setPosition(this->myShip->getPosition());
+	//this->myPaddle->draw();
+	
 
 	//-------bullets update&draw------
 	ofSetColor(10, 10, 10);
@@ -236,7 +232,7 @@ void GameScene::draw()
 
 		if ((*it)->play_shotse && !shot_se->isPlaying())
 		{
-			shot_se->play();
+			//shot_se->play();
 		}
 
 		float x1 = (*it)->getPosition().x;
@@ -316,7 +312,7 @@ void GameScene::keyReleased(int key)
 {
 	this->myShip->keyReleased(key);
 	if (key == 'p') {
-		activate_paddle = !activate_paddle;
+		//activate_paddle = !activate_paddle;
 	}
 }
 
@@ -336,7 +332,7 @@ void GameScene::b_contactStart(ofxBox2dContactArgs & e)
 
 	if (aData == NULL || bData == NULL)
 	{
-		wall_hit_se->play();
+		//wall_hit_se->play();
 		return;
 	}
 
@@ -344,12 +340,12 @@ void GameScene::b_contactStart(ofxBox2dContactArgs & e)
 	{
 		aData->is_hit = true;
 		bData->is_hit = true;
-		brick_hit_se->play();
+		//brick_hit_se->play();
 	}
 	else if (aData->object_type == GameObjectData::brick && bData->object_type == GameObjectData::ball)
 	{
 		aData->is_hit = true;
 		bData->is_hit = true;
-		brick_hit_se->play();
+		//brick_hit_se->play();
 	}
 }
