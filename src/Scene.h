@@ -32,7 +32,7 @@ public:
 
 class QuitScene :public Scene {
 public:
-	QuitScene(std::unique_ptr<SettingParameter> _setting_parameter);
+	QuitScene(std::unique_ptr<SettingParameter>&& _setting_parameter);
 	void update() { std::exit(0); };
 	void draw() {};
 	std::unique_ptr<SettingParameter> getSettingParameter() {
@@ -44,7 +44,7 @@ private:
 
 class TitleScene :public Scene {
 public:
-	TitleScene(std::unique_ptr<SettingParameter> _setting_parameter);
+	TitleScene(std::unique_ptr<SettingParameter>&& _setting_parameter);
 	~TitleScene();
 	std::unique_ptr<SettingParameter> getSettingParameter() {
 		return std::move(setting_parameter);

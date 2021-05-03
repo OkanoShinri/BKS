@@ -3,11 +3,13 @@
 class SettingParameter
 {
 private:
-	bool is_paddlemode;
-	bool is_windowmode;
-	float bgm_volume;
-	float se_volume;
-	int myship_life, window_width, window_height;
+	bool is_paddlemode = false;
+	bool is_windowmode = true;
+	float bgm_volume = 0.2;
+	float se_volume = 0.8;
+	int myship_life = 3;
+	int window_width = ofGetWidth();
+	int window_height = ofGetHeight();
 public:
 	SettingParameter();
 	~SettingParameter() {

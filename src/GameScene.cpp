@@ -1,6 +1,6 @@
 #include "GameScene.h"
 
-GameScene::GameScene(std::unique_ptr<SettingParameter> _setting_parameter)
+GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 {
 	setting_parameter = std::move(_setting_parameter);
 

@@ -1,11 +1,11 @@
 #include "Scene.h"
 
-QuitScene::QuitScene(std::unique_ptr<SettingParameter> _setting_parameter)
+QuitScene::QuitScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 {
 	setting_parameter = std::move(_setting_parameter);
 }
 
-TitleScene::TitleScene(std::unique_ptr<SettingParameter> _setting_parameter)
+TitleScene::TitleScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 {
 	setting_parameter = std::move(_setting_parameter);
 

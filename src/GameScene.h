@@ -10,7 +10,7 @@ class GameScene :
 	public Scene
 {
 public:
-	GameScene(std::unique_ptr<SettingParameter> _setting_parameter);
+	GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter);
 	~GameScene();
 	std::unique_ptr<SettingParameter> getSettingParameter() {
 		return std::move(setting_parameter);
