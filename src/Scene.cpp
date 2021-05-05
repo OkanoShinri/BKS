@@ -17,7 +17,10 @@ TitleScene::TitleScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 	choice_idx = 0;
 	push_counter = 0;
 
-	this->Oranienbaum.load("Oranienbaum.ttf", 30);
+	Oranienbaum = std::make_unique<ofTrueTypeFont>();
+	Oranienbaum_big = std::make_unique<ofTrueTypeFont>();
+	Oranienbaum->load("Oranienbaum.ttf", 30);
+	Oranienbaum_big->load("Oranienbaum.ttf", 60);
 
 	joy_.setup(GLFW_JOYSTICK_1);
 }
@@ -87,9 +90,10 @@ void TitleScene::draw()
 	ofDrawRectangle(0, 0, setting_parameter->window_width, setting_parameter->window_height);
 
 	ofSetColor(0, 0, 0);
-	Oranienbaum.drawString("Start", start_pos.x, start_pos.y);
-	Oranienbaum.drawString("Setting", setting_pos.x, setting_pos.y);
-	Oranienbaum.drawString("Quit", quit_pos.x, quit_pos.y);
+	Oranienbaum_big->drawString("**Insert Title**", 400, 300);
+	Oranienbaum->drawString("Start", start_pos.x, start_pos.y);
+	Oranienbaum->drawString("Setting", setting_pos.x, setting_pos.y);
+	Oranienbaum->drawString("Quit", quit_pos.x, quit_pos.y);
 
 	int size_of_r = 15;
 	ofPushMatrix();
@@ -154,8 +158,8 @@ SettingScene::SettingScene(std::unique_ptr<SettingParameter> _setting_parameter)
 
 	choice_idx = 0;
 	push_counter = 0;
-
-	this->Oranienbaum.load("Oranienbaum.ttf", 30);
+	Oranienbaum = std::make_unique<ofTrueTypeFont>();
+	Oranienbaum->load("Oranienbaum.ttf", 30);
 
 	joy_.setup(GLFW_JOYSTICK_1);
 }
@@ -261,9 +265,9 @@ void SettingScene::draw()
 	ofDrawRectangle(0, 0, setting_parameter->window_width, setting_parameter->window_height);
 
 	ofSetColor(0, 0, 0);
-	Oranienbaum.drawString("Setting", setting_parameter->window_width / 2 - 30, 50);
+	Oranienbaum->drawString("Setting", setting_parameter->window_width / 2 - 30, 50);
 
-	Oranienbaum.drawString("BGM Volume", volume_pos.x, volume_pos.y);
+	Oranienbaum->drawString("BGM Volume", volume_pos.x, volume_pos.y);
 	ofSetLineWidth(2.0);
 	ofDrawLine(bar_left, volume_pos.y, bar_right, volume_pos.y);
 	ofNoFill();
@@ -273,7 +277,7 @@ void SettingScene::draw()
 	ofSetLineWidth(1.0);
 	ofDrawCircle(ofMap(setting_parameter->bgm_volume, 0, 1, bar_left, bar_right), volume_pos.y, 10);
 
-	Oranienbaum.drawString("SE Volume", se_pos.x, se_pos.y);
+	Oranienbaum->drawString("SE Volume", se_pos.x, se_pos.y);
 	ofSetLineWidth(2.0);
 	ofDrawLine(bar_left, se_pos.y, bar_right, se_pos.y);
 	ofNoFill();
@@ -283,9 +287,9 @@ void SettingScene::draw()
 	ofSetLineWidth(1.0);
 	ofDrawCircle(ofMap(setting_parameter->se_volume, 0, 1, bar_left, bar_right), se_pos.y, 10);
 
-	Oranienbaum.drawString("Full Screen", windowmode_pos.x, windowmode_pos.y);
+	Oranienbaum->drawString("Full Screen", windowmode_pos.x, windowmode_pos.y);
 
-	Oranienbaum.drawString("Return", return_pos.x, return_pos.y);
+	Oranienbaum->drawString("Return", return_pos.x, return_pos.y);
 
 	//----------cursor----------------
 	int size_of_cursor_r = 15;

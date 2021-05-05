@@ -71,7 +71,7 @@ private:
 	int choice_idx; //play = 0, setting, quit,
 	int push_counter;
 
-	ofTrueTypeFont Oranienbaum;
+	std::unique_ptr<ofTrueTypeFont> Oranienbaum, Oranienbaum_big;
 	ofxJoystick joy_;
 	std::unique_ptr<SettingParameter> setting_parameter;
 	SceneIdx next_scene = play_game_scene;
@@ -103,7 +103,7 @@ private:
 	int choice_idx; //play = 0, setting, quit,
 	int push_counter;
 
-	ofTrueTypeFont Oranienbaum;
+	std::unique_ptr<ofTrueTypeFont> Oranienbaum;
 	ofxJoystick joy_;
 	std::unique_ptr<SettingParameter> setting_parameter;
 	SceneIdx next_scene = title_scene;

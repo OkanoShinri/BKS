@@ -20,9 +20,7 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	this->current_scene->draw();
-	ofSetColor(255, 255, 255);
-	ofDrawBitmapString(ofToString(ofGetFrameRate()) + "fps", 20, ofGetHeight() - 50);
+	this->current_scene->draw();	
 }
 
 //--------------------------------------------------------------
