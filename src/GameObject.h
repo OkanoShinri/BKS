@@ -7,6 +7,7 @@ class GameObject {
 public:
 };
 
+
 struct GameObjectData {
 	enum ObjTypeIdx { myship = 0, ball, brick, bullet, effect };
 	ObjTypeIdx object_type;
@@ -17,6 +18,7 @@ struct GameObjectData {
 	float r;
 	float bullet_speed_rate = 1.0;
 };
+
 
 class BulletData {
 public:
@@ -38,6 +40,7 @@ public:
 		is_homing = _is_homing;
 	}
 };
+
 
 class Bullet
 {
@@ -61,6 +64,7 @@ public:
 		return private_data->r;
 	}
 };
+
 
 class MyShip
 {
@@ -95,6 +99,7 @@ public:
 	ofVec2f getPosition();
 };
 
+
 class Ball :public ofxBox2dCircle
 {
 private:
@@ -106,6 +111,7 @@ public:
 	void draw();
 	void update();
 };
+
 
 class Brick :public ofxBox2dRect {
 protected:
@@ -122,6 +128,7 @@ public:
 	}
 	virtual std::list<std::shared_ptr<BulletData>> makeBullet() = 0;
 };
+
 
 class Jikinerai_Single1 :public Brick {
 private:
@@ -149,9 +156,10 @@ public:
 	}
 };
 
+
 class NWay_Around_Single1 :public Brick {
 private:
-	int n_way = 32;
+	int n_way = 16;
 public:
 	NWay_Around_Single1(b2World * _b2dworld, float _x, float _y, float _v_y) {
 		this->setPhysics(0.0, 1.0, 0.0);
@@ -178,6 +186,7 @@ public:
 		n_way = n;
 	}
 };
+
 
 class Jikinerai_Multiple1 :public Brick {
 private:
@@ -207,6 +216,7 @@ public:
 	}
 };
 
+
 class FourWay_Guruguru1 :public Brick {
 private:
 public:
@@ -227,13 +237,14 @@ public:
 		for (int j = 0; j < 16; j++) {
 			for (int i = 0; i < 4; i++) {
 				bullets.emplace_back(
-					std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(j * 19 * DEG_TO_RAD + 2 * PI* i / 4), speed*sin(j * 19 * DEG_TO_RAD + 2 * PI* i / 4)), 10, j * 3, BulletData::needle_white)
+					std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(j * 19 * DEG_TO_RAD + 2 * PI* i / 4), speed*sin(j * 19 * DEG_TO_RAD + 2 * PI* i / 4)), 10, j * 2, BulletData::needle_white)
 				);
 			}
 		}
 		return bullets;
 	}
 };
+
 
 class NWay_Around_Multiple1 :public Brick {
 private:
@@ -266,6 +277,7 @@ public:
 		n_way = n;
 	}
 };
+
 
 class Jikinerai_NWay_Single1 :public Brick {
 private:
@@ -301,6 +313,7 @@ public:
 	}
 };
 
+
 class Jikinerai_NWay_Single2 :public Brick {
 private:
 	std::shared_ptr<MyShip> myship_copy;
@@ -334,6 +347,7 @@ public:
 		n_way = n;
 	}
 };
+
 
 class NWay_Around_Big1 :public Brick {
 private:

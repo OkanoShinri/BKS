@@ -22,7 +22,7 @@ public:
 		return can_change_scene;
 	}
 private:
-	//std::unique_ptr<Brick> brickFactory(int _id, float _v_y);
+	void addBrick(int _id, float _v_y);
 	void b_contactStart(ofxBox2dContactArgs &e);
 	void draw();
 	void drawHowToPlay(float _x, float _y);
