@@ -235,7 +235,9 @@
     <ClCompile Include="..\..\..\addons\ofxJoystick\src\ofxJoystick.cpp">
       <Filter>addons\ofxJoystick\src</Filter>
     </ClCompile>
-    <ClCompile Include="src\SettingParameter.cpp" />
+    <ClCompile Include="src\SettingParameter.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="src">
@@ -561,7 +563,9 @@
     <ClInclude Include="..\..\..\addons\ofxJoystick\src\ofxJoystick.h">
       <Filter>addons\ofxJoystick\src</Filter>
     </ClInclude>
-    <ClInclude Include="src\SettingParameter.h" />
+    <ClInclude Include="src\SettingParameter.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="icon.rc" />
