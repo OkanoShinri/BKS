@@ -4,7 +4,7 @@
 #include "GameObject.h"
 #include "BackGroundImage.h"
 
-constexpr auto MAX_BULLETS_NUM = 2000;
+constexpr auto MAX_BULLETS_NUM = 3000;
 
 class GameScene :
 	public Scene

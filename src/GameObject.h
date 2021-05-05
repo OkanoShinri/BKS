@@ -400,3 +400,37 @@ public:
 		n_way = n;
 	}
 };
+
+
+class Hibachi1 :public Brick {
+private:
+public:
+	Hibachi1(b2World * _b2dworld, float _x, float _y, float _v_y) {
+		this->setPhysics(0.0, 1.0, 0.0);
+		this->setup(_b2dworld, _x, _y, 30, 30);
+		this->setData(new GameObjectData());
+		this->private_data = (GameObjectData*)getData();
+		this->private_data->object_type = GameObjectData::brick;
+		this->private_data->is_hit = false;
+		this->private_data->can_remove = false;
+		this->private_data->vec = ofVec2f(0, _v_y);
+		this->private_data->bullet_speed_rate = 1.0;
+	}
+	std::list<std::shared_ptr<BulletData>> makeBullet() {
+		std::list<std::shared_ptr<BulletData>> bullets;
+		float speed = 9.0*private_data->bullet_speed_rate;
+		for (int j = 0; j < 64; j++) {
+			for (int i = 0; i < 12; i++) {
+				if (j % 8 < 6) {
+					bullets.emplace_back(
+						std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(j  * DEG_TO_RAD + 2 * PI*i / 12), speed*sin(j * DEG_TO_RAD + 2 * PI*i / 12)), 15, j * 2, BulletData::round_black)
+					);
+					bullets.emplace_back(
+						std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(-j  * DEG_TO_RAD + 2 * PI*i / 12), speed*sin(-j * DEG_TO_RAD + 2 * PI*i / 12)), 12, j * 2, BulletData::round_black)
+					);
+				}
+			}
+		}
+		return bullets;
+	}
+};
