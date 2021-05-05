@@ -20,7 +20,7 @@ struct GameObjectData {
 
 class BulletData {
 public:
-	enum BulletImageIdx { round_white = 0, round_black, triangle_white, triangle_black };
+	enum BulletImageIdx { round_white = 0, round_black, triangle_white, triangle_black, needle_white, needle_brack };
 	BulletImageIdx bullet_img_type;
 	ofVec2f pos;
 	ofVec2f vec;
@@ -202,6 +202,34 @@ public:
 			bullets.emplace_back(
 				std::make_unique<BulletData>(getPosition(), ofVec2f(speed*(myship_copy->getPosition() - this->getPosition()).normalize()), 10, i*4, BulletData::triangle_black)
 			);
+		}
+		return bullets;
+	};
+};
+
+class FourWay_Guruguru1 :public Brick {
+private:
+public:
+	FourWay_Guruguru1(b2World * _b2dworld, float _x, float _y, float _v_y) {
+		this->setPhysics(0.0, 1.0, 0.0);
+		this->setup(_b2dworld, _x, _y, 30, 30);
+		this->setData(new GameObjectData());
+		this->private_data = (GameObjectData*)getData();
+		this->private_data->object_type = GameObjectData::brick;
+		this->private_data->is_hit = false;
+		this->private_data->can_remove = false;
+		this->private_data->vec = ofVec2f(0, _v_y);
+		this->private_data->bullet_speed_rate = 1.0;
+	}
+	std::list<std::shared_ptr<BulletData>> makeBullet() {
+		std::list<std::shared_ptr<BulletData>> bullets;
+		float speed = 4.0*private_data->bullet_speed_rate;
+		for (int j = 0; j < 16; j++) {
+			for (int i = 0; i < 4; i++) {
+				bullets.emplace_back(
+					std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(j * 19 * DEG_TO_RAD + 2 * PI* i / 4), speed*sin(j * 19 * DEG_TO_RAD + 2 * PI* i / 4)), 10, j * 3, BulletData::needle_white)
+				);
+			}
 		}
 		return bullets;
 	};

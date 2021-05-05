@@ -152,10 +152,10 @@ void GameScene::update()
 			//this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(this->box2d_for_breakout->getWorld(), ofGetWidth() / 3 + x + 30 * i, -50, 30, 30, 0.5));
 		}
 	}
-	else if (counter % 120 == 0)
+	else if (counter % 12 == 0)
 	{
 		this->bricks.emplace_front(std::make_unique<Jikinerai_Multiple1>(this->box2d_for_breakout->getWorld(), ofGetWidth() / 3 + (int)ofRandom(200), -50, 0.5,myShip));
-		//this->bricks.emplace_front(std::make_unique<Jikinerai_Multiple1>(this->box2d_for_breakout->getWorld(), ofGetWidth() / 3 + (int)ofRandom(200), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<FourWay_Guruguru1>(this->box2d_for_breakout->getWorld(), ofGetWidth() / 3 + (int)ofRandom(200), -50, 0.5));
 		//this->bricks.emplace_front(std::move(brickFactory((int)ofRandom(5))));
 		//this->bricks.emplace_front(std::move(brickFactory(4)));
 	}

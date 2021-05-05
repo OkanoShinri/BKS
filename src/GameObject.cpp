@@ -61,10 +61,10 @@ void Bullet::set(const std::shared_ptr<BulletData>& _data)
 	play_shotse = false;
 	counter = 0;
 
-	this->angle = std::atan2(private_data->vec.x, private_data->vec.y);
-	pos1 = ofVec2f(private_data->r*sinf(angle), private_data->r*cosf(angle));
-	pos2 = ofVec2f(private_data->r*sinf(angle + 2 * PI / 3), private_data->r*cosf(angle + 2 * PI / 3));
-	pos3 = ofVec2f(private_data->r*sinf(angle - 2 * PI / 3), private_data->r*cosf(angle - 2 * PI / 3));
+	this->angle = std::atan2(private_data->vec.y, private_data->vec.x);
+	pos1 = ofVec2f(private_data->r*cosf(angle), private_data->r*sinf(angle));
+	pos2 = ofVec2f(private_data->r*cosf(angle + 2 * PI / 3), private_data->r*sinf(angle + 2 * PI / 3));
+	pos3 = ofVec2f(private_data->r*cosf(angle - 2 * PI / 3), private_data->r*sinf(angle - 2 * PI / 3));
 }
 
 Bullet::~Bullet()
@@ -81,6 +81,7 @@ void Bullet::draw()
 	if (counter < wait_time) {
 		return;
 	}
+	ofSetColor(0, 0, 0);
 	switch (bullet_img_type)
 	{
 	case BulletData::round_white:
@@ -113,12 +114,28 @@ void Bullet::draw()
 		ofDrawTriangle(pos1, pos2, pos3);
 		ofPopMatrix();
 		break;
+	case BulletData::needle_white:
+		ofNoFill();
+		ofPushMatrix();
+		ofTranslate(this->getPosition());
+		ofRotateRad(angle);
+		ofDrawRectangle(-private_data->r, -private_data->r / 2, private_data->r * 2, private_data->r);
+		ofFill();
+		ofPopMatrix();
+		break;
+	case BulletData::needle_brack:
+		ofFill();
+		ofPushMatrix();
+		ofTranslate(this->getPosition());
+		ofRotateRad(angle);
+		ofDrawRectangle(-private_data->r/2, -private_data->r, private_data->r, private_data->r*2);
+		ofPopMatrix();
+		break;
 	default://round_white
 		ofNoFill();
 		ofDrawCircle(private_data->pos, private_data->r);
 		ofDrawCircle(private_data->pos, private_data->r*0.5);
 		ofFill();
-		break;
 		break;
 	}
 }
