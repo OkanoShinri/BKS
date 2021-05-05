@@ -169,7 +169,7 @@ public:
 		float speed = 6.0*private_data->bullet_speed_rate;
 		for (int i = 0; i < n_way; i++) {
 			bullets.emplace_back(
-				std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(2*PI*i/n_way), speed*sin(2*PI*i/n_way)), 10, 0, BulletData::round_white)
+				std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(2 * PI*i / n_way), speed*sin(2 * PI*i / n_way)), 10, 0, BulletData::round_white)
 			);
 		}
 		return bullets;
@@ -200,7 +200,7 @@ public:
 		float speed = 6.0*private_data->bullet_speed_rate;
 		for (int i = 0; i < 8; i++) {
 			bullets.emplace_back(
-				std::make_unique<BulletData>(getPosition(), ofVec2f(speed*(myship_copy->getPosition() - this->getPosition()).normalize()), 10, i*4, BulletData::triangle_black)
+				std::make_unique<BulletData>(getPosition(), ofVec2f(speed*(myship_copy->getPosition() - this->getPosition()).normalize()), 10, i * 4, BulletData::triangle_black)
 			);
 		}
 		return bullets;
@@ -233,4 +233,36 @@ public:
 		}
 		return bullets;
 	};
+};
+
+class NWay_Around_Multiple1 :public Brick {
+private:
+	int n_way = 8;
+public:
+	NWay_Around_Multiple1(b2World * _b2dworld, float _x, float _y, float _v_y) {
+		this->setPhysics(0.0, 1.0, 0.0);
+		this->setup(_b2dworld, _x, _y, 30, 30);
+		this->setData(new GameObjectData());
+		this->private_data = (GameObjectData*)getData();
+		this->private_data->object_type = GameObjectData::brick;
+		this->private_data->is_hit = false;
+		this->private_data->can_remove = false;
+		this->private_data->vec = ofVec2f(0, _v_y);
+		this->private_data->bullet_speed_rate = 1.0;
+	}
+	std::list<std::shared_ptr<BulletData>> makeBullet() {
+		std::list<std::shared_ptr<BulletData>> bullets;
+		float speed = 4.0*private_data->bullet_speed_rate;
+		for (int j = 0; j < 4; j++) {
+			for (int i = 0; i < n_way; i++) {
+				bullets.emplace_back(
+					std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way), speed*sin(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way)), 10, j, BulletData::round_white)
+				);
+			}
+		}
+		return bullets;
+	};
+	void setNWay(int n) {
+		n_way = n;
+	}
 };
