@@ -45,19 +45,22 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 
 	back_ground = std::make_unique<BackGroundImage>();
 
-	this->wall_hit_se = std::make_unique<ofSoundPlayer>();
+	wall_hit_se = std::make_unique<ofSoundPlayer>();
 	wall_hit_se->load("se01.mp3");
-	this->wall_hit_se->setMultiPlay(true);
+	wall_hit_se->setVolume(setting_parameter->getSEVolume());
+	wall_hit_se->setMultiPlay(true);
 
-	this->brick_hit_se = std::make_unique<ofSoundPlayer>();
+	brick_hit_se = std::make_unique<ofSoundPlayer>();
 	brick_hit_se->load("se02.mp3");
-	this->brick_hit_se->setMultiPlay(true);
+	brick_hit_se->setVolume(setting_parameter->getSEVolume());
+	brick_hit_se->setMultiPlay(true);
 
-	this->shot_se = std::make_unique<ofSoundPlayer>();
+	shot_se = std::make_unique<ofSoundPlayer>();
 	shot_se->load("shotse01.mp3");
-	this->shot_se->setMultiPlay(true);
+	shot_se->setVolume(setting_parameter->getSEVolume());
+	shot_se->setMultiPlay(true);
 
-	this->game_bgm = std::make_unique<ofSoundPlayer>();
+	game_bgm = std::make_unique<ofSoundPlayer>();
 	std::string bgms[] = { "Ž‡‰‘_-’Ç‰¯-_2.mp3","ƒ€ƒXƒJƒŠ‚Ì‰Ô.mp3" };
 	int idx = std::rand() % 2;
 	game_bgm->load(bgms[idx]);

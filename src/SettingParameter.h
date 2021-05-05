@@ -19,6 +19,9 @@ public:
 	void setBGMVolume(float _bgm_volume) {
 		bgm_volume = _bgm_volume;
 	}
+	void setSEVolume(float _se_volume) {
+		se_volume = _se_volume;
+	}
 	float getWidth() {
 		return window_width;
 	}
@@ -27,6 +30,9 @@ public:
 	}
 	float getBGMVolume() {
 		return bgm_volume;
+	}
+	float getSEVolume() {
+		return se_volume;
 	}
 	bool isWindowMode() {
 		return is_windowmode;
