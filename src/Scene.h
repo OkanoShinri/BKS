@@ -8,7 +8,7 @@
 
 class Scene {
 public:
-	enum SceneIdx { quit_game_scene = 0, title_scene, play_game_scene };
+	enum SceneIdx { quit_game_scene = 0, title_scene, play_game_scene , setting_scene};
 
 	virtual ~Scene() {};
 	virtual std::unique_ptr<SettingParameter> getSettingParameter() = 0;
@@ -55,9 +55,31 @@ private:
 	void keyPressed(int key);
 	void feadout(int mun) {};
 
-	enum TitleChoiceIdx { play = 0, quit };
-	ofTrueTypeFont verdana;
+	int choice_idx; //play = 0, setting, quit, 
+	int push_counter;
+
+	ofTrueTypeFont Oranienbaum;
 	ofxJoystick joy_;
 	std::unique_ptr<SettingParameter> setting_parameter;
-	TitleChoiceIdx choice;
+};
+
+class SettingScene :public Scene {
+public:
+	SettingScene(std::unique_ptr<SettingParameter> _setting_parameter);
+	~SettingScene();
+	std::unique_ptr<SettingParameter> getSettingParameter() {
+		return std::move(setting_parameter);
+	}
+private:
+	void update();
+	void draw();
+	void keyPressed(int key);
+	void feadout(int mun) {};
+
+	int choice_idx; //play = 0, setting, quit, 
+	int push_counter;
+
+	ofTrueTypeFont Oranienbaum;
+	ofxJoystick joy_;
+	std::unique_ptr<SettingParameter> setting_parameter;
 };

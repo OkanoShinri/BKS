@@ -85,6 +85,11 @@ std::unique_ptr<Scene> ofApp::sceneFactory(Scene::SceneIdx idx)
 	case Scene::play_game_scene:
 		return std::make_unique<GameScene>(std::move(setting_parameter));
 		break;
+	case Scene::setting_scene:
+		return std::make_unique<SettingScene>(std::move(setting_parameter));
+		break;
+	default:
+		break;
 	}
 	return std::make_unique<QuitScene>(std::move(setting_parameter));
 }
