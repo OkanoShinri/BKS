@@ -18,7 +18,7 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 	this->transition_counter = 0;
 	this->transition_time = 180;
 
-	this->myShip = std::make_unique<MyShip>();
+	this->myShip = std::make_shared<MyShip>();
 	myShip->setSEVolume(setting_parameter->se_volume);
 
 	/*paddle
@@ -73,7 +73,7 @@ GameScene::~GameScene()
 {
 	std::cout << "Remove: GameScene" << std::endl;
 }
-
+/*
 std::unique_ptr<Brick> GameScene::brickFactory(int _id, float _v_y = 0.5)
 {
 	float init_y;
@@ -126,6 +126,7 @@ std::unique_ptr<Brick> GameScene::brickFactory(int _id, float _v_y = 0.5)
 		break;
 	}
 }
+*/
 
 void GameScene::update()
 {
@@ -148,12 +149,13 @@ void GameScene::update()
 		int x = (int)ofRandom(200);
 		for (int i = 0; i < 10; i++)
 		{
-			this->bricks.emplace_front(std::make_unique<Jikinerai_Brick>(this->box2d_for_breakout->getWorld(), ofGetWidth() / 3 + x + 30 * i, -50, 30, 30, 0.5));
+			//this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(this->box2d_for_breakout->getWorld(), ofGetWidth() / 3 + x + 30 * i, -50, 30, 30, 0.5));
 		}
 	}
 	else if (counter % 120 == 0)
 	{
-		this->bricks.emplace_front(std::move(brickFactory((int)ofRandom(5))));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(this->box2d_for_breakout->getWorld(), ofGetWidth() / 3 + (int)ofRandom(200), -50, 0.5, myShip));
+		//this->bricks.emplace_front(std::move(brickFactory((int)ofRandom(5))));
 		//this->bricks.emplace_front(std::move(brickFactory(4)));
 	}
 	/*
@@ -188,15 +190,13 @@ void GameScene::draw()
 	{
 		(*it)->update();
 		if ((*it)->canRemove()) {
-			// destroy brick(s) and make bullets
-			for (auto &_bullet_data : (*it)->getBullet()) {
-				active_bullets.push_back(non_active_bullets.back());
-				non_active_bullets.pop_back();
-				if (_bullet_data->vec.x == NULL) {
-					_bullet_data->vec = ofVec2f(6.0*(myShip->getPosition() - _bullet_data->pos).normalize());
-					_bullet_data->is_homing = true;
+			if ((*it)->isHit()) {
+				// destroy brick(s) and make bullets
+				for (auto & bullet_data : (*it)->makeBullet()) {
+					active_bullets.push_back(non_active_bullets.back());
+					non_active_bullets.pop_back();
+					active_bullets.back()->set(bullet_data);
 				}
-				active_bullets.back()->set(_bullet_data);
 			}
 			it = this->bricks.erase(it);
 		}

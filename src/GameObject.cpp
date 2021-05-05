@@ -154,32 +154,11 @@ ofVec2f Bullet::getPosition()
 	return private_data->pos;
 }
 
-Brick::Brick(b2World * _b2dworld, float _x, float _y, float _width, float _height, float _v_y)
-{
-	this->setPhysics(0.0, 1.0, 0.0);
-	this->setup(_b2dworld, _x, _y, _width, _height);
-
-	this->setData(new GameObjectData());
-	this->private_data = (GameObjectData*)getData();
-	this->private_data->object_type = GameObjectData::brick;
-	this->private_data->is_hit = false;
-	this->private_data->can_remove = false;
-
-	this->private_data->vec.y = _v_y;
-}
+Brick::Brick()
+{}
 
 Brick::~Brick()
-{
-}
-
-void Brick::makeBullet()
-{
-	float speed = 4.0;
-	for (int i = 0; i < 16; i++)
-	{
-		bullets.emplace_back(std::make_shared<BulletData>(getPosition(), ofVec2f(speed*cosf(2.0*PI*i / 16), speed*sinf(2.0 * PI*i / 16)), 10, 0));
-	}
-}
+{}
 
 void Brick::draw()
 {
@@ -213,7 +192,7 @@ void Brick::update()
 	setPosition(getPosition() + private_data->vec);
 
 	if (this->getPosition().y > ofGetHeight() + 50 || this->getPosition().y < -50 || private_data->is_hit) {
-		makeBullet();
+		//makeBullet();
 		private_data->can_remove = true;
 	}
 }
@@ -221,6 +200,11 @@ void Brick::update()
 bool Brick::canRemove()
 {
 	return private_data->can_remove;
+}
+
+bool Brick::isHit()
+{
+	return private_data->is_hit;
 }
 
 MyShip::MyShip() :
