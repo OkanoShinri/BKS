@@ -3,12 +3,11 @@
 
 //========================================================================
 int main() {
-
 	ofGLFWWindowSettings settings;
 	settings.setSize(1280, 720);
 	settings.resizable = false;
 	ofCreateWindow(settings);
-	
+
 	//ofSetupOpenGL(1920, 1080, OF_FULLSCREEN);
 	//ofSetupOpenGL(1280, 720, OF_WINDOW);
 
