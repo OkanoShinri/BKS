@@ -237,7 +237,6 @@ MyShip::MyShip() :
 
 	this->hit_se = std::make_unique<ofSoundPlayer>();
 	hit_se->load("hitse01.mp3");
-	this->hit_se->setMultiPlay(true);
 }
 
 void MyShip::update()
@@ -289,9 +288,9 @@ void MyShip::update()
 	}
 
 	if (private_data->is_hit) {
-		hit_se->play();
+		
 		private_data->is_hit = false;
-		if (life == 0)
+		if (life < 1)
 		{
 			private_data->can_remove = true;
 			return;
@@ -299,7 +298,9 @@ void MyShip::update()
 		if (hit_anime_counter > 0) {
 			return;
 		}
+		//else
 		life--;
+		hit_se->play();
 		hit_anime_counter = 60;
 	}
 }

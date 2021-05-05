@@ -2,13 +2,16 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-	this->current_scene = sceneFactory(Scene::play_game_scene);
+	this->current_scene = sceneFactory(Scene::title_scene);
+	//this->setting_parameter = std::make_shared<SettingParameter>();
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	if (this->current_scene->can_change_scene) {
-		Scene::SceneIdx next = current_scene->nextScene;
+	if (this->current_scene->canChangeScene()) {
+		setting_parameter.reset();
+		setting_parameter = std::move(current_scene->getSettingParameter());
+		Scene::SceneIdx next = current_scene->getNextScene();
 		this->current_scene.reset();
 		this->current_scene = sceneFactory(next);
 	}
@@ -74,14 +77,19 @@ std::unique_ptr<Scene> ofApp::sceneFactory(Scene::SceneIdx idx)
 	switch (idx)
 	{
 	case Scene::quit_game_scene:
-		return std::make_unique<QuitScene>();
+		return std::make_unique<QuitScene>(std::move(setting_parameter));
 		break;
 	case Scene::title_scene:
-		return std::make_unique<TitleScene>();
+		return std::make_unique<TitleScene>(std::move(setting_parameter));
 		break;
 	case Scene::play_game_scene:
-		return std::make_unique<GameScene>();
+		return std::make_unique<GameScene>(std::move(setting_parameter));
+		break;
+	case Scene::setting_scene:
+		return std::make_unique<SettingScene>(std::move(setting_parameter));
+		break;
+	default:
 		break;
 	}
-	return std::make_unique<QuitScene>();
+	return std::make_unique<QuitScene>(std::move(setting_parameter));
 }

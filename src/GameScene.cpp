@@ -1,7 +1,9 @@
 #include "GameScene.h"
 
-GameScene::GameScene()
+GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 {
+	setting_parameter = std::move(_setting_parameter);
+
 	this->box2d_for_breakout = std::make_shared<ofxBox2d>();
 	this->box2d_for_breakout->init();
 	this->box2d_for_breakout->enableEvents();
@@ -13,18 +15,18 @@ GameScene::GameScene()
 
 	this->can_change_scene = false;
 	this->is_transiting = false;
-	this->nextScene = Scene::title_scene;
 	this->transition_counter = 0;
 	this->transition_time = 180;
 
 	this->myShip = std::make_unique<MyShip>();
+	myShip->setSEVolume(setting_parameter->getSEVolume());
 
-	if (activate_paddle) {
-		this->myPaddle = std::make_unique<ofxBox2dRect>();
-		this->myPaddle->setPhysics(1.0, 1.0, 0.0);
-		this->myPaddle->setup(this->box2d_for_breakout->getWorld(), myShip->getPosition().x - 100, myShip->getPosition().y - 25, 200, 50);
-		this->myPaddle->setFixedRotation(true);
-	}
+	/*paddle
+	this->myPaddle = std::make_unique<ofxBox2dRect>();
+	this->myPaddle->setPhysics(1.0, 1.0, 0.0);
+	this->myPaddle->setup(this->box2d_for_breakout->getWorld(), myShip->getPosition().x - 100, myShip->getPosition().y - 25, 200, 50);
+	this->myPaddle->setFixedRotation(true);
+	*/
 
 	this->balls.clear();
 
@@ -43,23 +45,27 @@ GameScene::GameScene()
 
 	back_ground = std::make_unique<BackGroundImage>();
 
-	this->wall_hit_se = std::make_unique<ofSoundPlayer>();
+	wall_hit_se = std::make_unique<ofSoundPlayer>();
 	wall_hit_se->load("se01.mp3");
-	this->wall_hit_se->setMultiPlay(true);
+	wall_hit_se->setVolume(setting_parameter->getSEVolume());
+	wall_hit_se->setMultiPlay(true);
 
-	this->brick_hit_se = std::make_unique<ofSoundPlayer>();
+	brick_hit_se = std::make_unique<ofSoundPlayer>();
 	brick_hit_se->load("se02.mp3");
-	this->brick_hit_se->setMultiPlay(true);
+	brick_hit_se->setVolume(setting_parameter->getSEVolume());
+	brick_hit_se->setMultiPlay(true);
 
-	this->shot_se = std::make_unique<ofSoundPlayer>();
+	shot_se = std::make_unique<ofSoundPlayer>();
 	shot_se->load("shotse01.mp3");
-	this->shot_se->setMultiPlay(true);
+	shot_se->setVolume(setting_parameter->getSEVolume());
+	shot_se->setMultiPlay(true);
 
-	this->game_bgm = std::make_unique<ofSoundPlayer>();
+	game_bgm = std::make_unique<ofSoundPlayer>();
 	std::string bgms[] = { "Ž‡‰‘_-’Ç‰¯-_2.mp3","ƒ€ƒXƒJƒŠ‚Ì‰Ô.mp3" };
 	int idx = std::rand() % 2;
 	game_bgm->load(bgms[idx]);
 	game_bgm->setLoop(true);
+	game_bgm->setVolume(setting_parameter->getBGMVolume());
 	game_bgm->play();
 }
 
@@ -124,7 +130,7 @@ std::unique_ptr<Brick> GameScene::brickFactory(int _id, float _v_y = 0.5)
 void GameScene::update()
 {
 	if (is_transiting) {
-		game_bgm->setVolume(ofMap(transition_counter, 0, transition_time, 1.0, 0.0));
+		game_bgm->setVolume(ofMap(transition_counter, 0.0, transition_time, setting_parameter->getBGMVolume(), 0.0));
 
 		if (transition_counter < transition_time) {
 			transition_counter++;
@@ -217,25 +223,19 @@ void GameScene::draw()
 	}
 
 	//-------paddle update&draw-------
-	if (activate_paddle) {
-		this->myPaddle->setPosition(this->myShip->getPosition());
-	}
-
-	if (activate_paddle) {
-		this->myPaddle->draw();
-	}
+	//this->myPaddle->setPosition(this->myShip->getPosition());
+	//this->myPaddle->draw();
+	
 
 	//-------bullets update&draw------
-	bool is_play_shotse = false;
 	ofSetColor(10, 10, 10);
 	for (auto it = this->active_bullets.begin(); it != this->active_bullets.end();)
 	{
 		(*it)->update();
 
-		if ((*it)->play_shotse && !is_play_shotse)
+		if (false && (*it)->play_shotse && !shot_se->isPlaying())
 		{
 			shot_se->play();
-			is_play_shotse = true;
 		}
 
 		float x1 = (*it)->getPosition().x;
@@ -269,7 +269,13 @@ void GameScene::draw()
 	ofDrawRectangle(ofGetWidth() * 3 / 4, 0, ofGetWidth() / 4, ofGetHeight());
 
 	ofSetColor(255, 255, 255);
-	drawHowToPlay(10, 10);
+	std::ostringstream bgm_param;
+	bgm_param << setting_parameter->getBGMVolume();
+	std::ostringstream se_param;
+	se_param << setting_parameter->getSEVolume();
+	ofDrawBitmapString("bgm: "+ bgm_param.str(), 100, ofGetHeight() / 2);
+	ofDrawBitmapString("se:  " + se_param.str(), 100, ofGetHeight() / 2 + 50);
+	//drawHowToPlay(10, 10);
 
 	//-------transition_in------------
 	if (counter < 30)
@@ -306,6 +312,7 @@ void GameScene::keyPressed(int key) {
 
 	switch (key) {
 	case 'q':
+		
 		this->can_change_scene = true;
 		break;
 	}
@@ -315,7 +322,7 @@ void GameScene::keyReleased(int key)
 {
 	this->myShip->keyReleased(key);
 	if (key == 'p') {
-		activate_paddle = !activate_paddle;
+		//activate_paddle = !activate_paddle;
 	}
 }
 

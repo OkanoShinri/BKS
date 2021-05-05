@@ -68,10 +68,7 @@ private:
 	std::unique_ptr<GameObjectData> private_data;
 	bool is_moving[4] = { false,false,false,false };
 	bool is_slow_move = false;
-	int counter;
-	int rotate_deg;
-	int life;
-	int hit_anime_counter;
+	int counter, rotate_deg, life, hit_anime_counter;
 	ofxJoystick joy_;
 	std::unique_ptr<ofSoundPlayer> hit_se;
 public:
@@ -91,6 +88,9 @@ public:
 	}
 	void setRemoveable() {
 		private_data->can_remove = true;
+	}
+	void setSEVolume(float se_volume) {
+		hit_se->setVolume(se_volume);
 	}
 	ofVec2f getPosition();
 };
