@@ -43,6 +43,8 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 	}
 	this->active_bullets.clear();
 
+	verdana = std::make_unique<ofTrueTypeFont>();
+	verdana->load("verdana.ttf", 30);
 	back_ground = std::make_unique<BackGroundImage>();
 
 	wall_hit_se = std::make_unique<ofSoundPlayer>();
@@ -87,41 +89,40 @@ void GameScene::addBrick(int id, float _v_y = 0.5)
 	switch (id)
 	{
 	case 0:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 1:
-		this->bricks.emplace_front(std::make_unique<NWay_Around_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<NWay_Around_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5));
 		break;
 	case 2:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_NWay_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_NWay_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 3:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_NWay_Single2>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_NWay_Single2>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 4:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_Multiple1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_Multiple1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 5:
-		this->bricks.emplace_front(std::make_unique<NWay_Around_Multiple1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<NWay_Around_Multiple1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5));
 		break;
 	case 6:
-		this->bricks.emplace_front(std::make_unique<NWay_Around_Big1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<NWay_Around_Big1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5));
 		break;
 	case 7:
-		this->bricks.emplace_front(std::make_unique<FourWay_Guruguru1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<FourWay_Guruguru1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5));
 		break;
 	case 8:
-		this->bricks.emplace_front(std::make_unique<NWay_Around_Kasoku1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<NWay_Around_Kasoku1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5));
 		break;
 	case 9:
-		this->bricks.emplace_front(std::make_unique<Hibachi1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<Hibachi1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5));
 		break;
 	default:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	}
 }
-
 
 void GameScene::update()
 {
@@ -138,17 +139,17 @@ void GameScene::update()
 	}
 
 	//-------add brick----------------
-	if (counter % 60 == 15)
+	if (!(counter % 30))
 	{
 		addBrick(0);
 	}
+
 	if (counter < 1800)
 	{
 		if (counter % 120 == 0)
 		{
 			addBrick(std::rand() % 3);
 		}
-		
 	}
 	else if (counter < 3600)
 	{
@@ -283,6 +284,15 @@ void GameScene::draw()
 	ofDrawRectangle(0, 0, ofGetWidth() / 4, ofGetHeight());
 	ofDrawRectangle(ofGetWidth() * 3 / 4, 0, ofGetWidth() / 4, ofGetHeight());
 
+	(this->is_transiting) ? ofSetColor(255, 10, 10) : ofSetColor(255, 255, 255);
+	char minute[3];
+	sprintf_s(minute, "%02d", finish_time / 3600);
+	char second[3];
+	sprintf_s(second, "%02d", (finish_time / 60) % 60);
+	char m_second[3];
+	sprintf_s(m_second, "%02d", (int)ofMap(finish_time % 60, 0, 60, 0, 99));
+	verdana->drawString("" + std::string(minute) + ":" + std::string(second) + ":" + std::string(m_second), 50, ofGetHeight() / 4);
+
 	ofSetColor(255, 255, 255);
 	if (game_bgm->isPlaying())
 	{
@@ -309,6 +319,10 @@ void GameScene::draw()
 	{
 		ofSetColor(255, 255, 255, ofMap(transition_counter, 0, transition_time, 0, 255));
 		ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+	}
+	else
+	{
+		finish_time = counter;
 	}
 }
 

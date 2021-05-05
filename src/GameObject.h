@@ -248,7 +248,7 @@ public:
 
 class NWay_Around_Multiple1 :public Brick {
 private:
-	int n_way = 8;
+	int n_way = 12;
 public:
 	NWay_Around_Multiple1(b2World * _b2dworld, float _x, float _y, float _v_y) {
 		this->setPhysics(0.0, 1.0, 0.0);

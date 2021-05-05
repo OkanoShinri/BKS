@@ -34,6 +34,7 @@ private:
 
 	//bool activate_paddle = false;
 	int counter = 0;
+	int finish_time = 0;
 	int transition_counter = 0;
 	int transition_time = 0;
 	bool can_change_scene = false;
@@ -50,4 +51,5 @@ private:
 	std::unique_ptr<ofSoundPlayer> game_bgm, wall_hit_se, brick_hit_se, shot_se;
 	std::unique_ptr<ofxBox2dRect> myPaddle;
 	SceneIdx next_scene = title_scene;
+	std::unique_ptr<ofTrueTypeFont> verdana;
 };
