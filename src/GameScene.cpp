@@ -43,6 +43,8 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 	}
 	this->active_bullets.clear();
 
+	verdana = std::make_unique<ofTrueTypeFont>();
+	verdana->load("verdana.ttf", 30);
 	back_ground = std::make_unique<BackGroundImage>();
 
 	wall_hit_se = std::make_unique<ofSoundPlayer>();
@@ -194,6 +196,7 @@ void GameScene::update()
 
 void GameScene::draw()
 {
+	ofSetColor(255, 255, 255);
 	//-------back ground------------
 	back_ground->draw();
 
@@ -282,8 +285,21 @@ void GameScene::draw()
 	ofSetColor(0, 0, 0);
 	ofDrawRectangle(0, 0, ofGetWidth() / 4, ofGetHeight());
 	ofDrawRectangle(ofGetWidth() * 3 / 4, 0, ofGetWidth() / 4, ofGetHeight());
-
 	ofSetColor(255, 255, 255);
+	ofDrawRectangle(0, 0, ofGetWidth() / 4 - 5, ofGetHeight());
+	ofDrawRectangle(ofGetWidth() * 3 / 4 + 5, 0, ofGetWidth() / 4, ofGetHeight());
+
+	(this->is_transiting) ? ofSetColor(255, 10, 10) : ofSetColor(0, 0, 0);
+	char minute[3];
+	sprintf_s(minute, "%02d", finish_time / 3600);
+	char second[3];
+	sprintf_s(second, "%02d", (finish_time / 60) % 60);
+	char m_second[3];
+	sprintf_s(m_second, "%02d", (int)ofMap(finish_time % 60, 0, 60, 0, 99));
+	verdana->drawString("" + std::string(minute) + ":" + std::string(second) + ":" + std::string(m_second), 50, ofGetHeight() / 4);
+
+
+	ofSetColor(0, 0, 0);
 	if (game_bgm->isPlaying())
 	{
 		std::ostringstream bgm_param;
@@ -294,6 +310,8 @@ void GameScene::draw()
 	std::ostringstream se_param;
 	se_param << setting_parameter->se_volume;
 	ofDrawBitmapString("se:  " + se_param.str(), 100, ofGetHeight() / 2 + 50);
+
+	ofDrawBitmapString(ofToString(ofGetFrameRate()) + "fps", 20, ofGetHeight() - 50);
 
 	//drawHowToPlay(10, 10);
 
@@ -309,6 +327,10 @@ void GameScene::draw()
 	{
 		ofSetColor(255, 255, 255, ofMap(transition_counter, 0, transition_time, 0, 255));
 		ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+	}
+	else
+	{
+		finish_time = counter;
 	}
 }
 
