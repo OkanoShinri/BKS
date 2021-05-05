@@ -28,7 +28,7 @@ public:
 	int wait_time;
 	bool is_homing;
 
-	BulletData(ofVec2f _init_pos, ofVec2f _init_vec, float _r, int _wait_time, BulletImageIdx _bullet_img_type= round_white)
+	BulletData(ofVec2f _init_pos, ofVec2f _init_vec, float _r, int _wait_time, BulletImageIdx _bullet_img_type = round_white)
 		:pos(_init_pos), vec(_init_vec), r(_r), wait_time(_wait_time), bullet_img_type(_bullet_img_type), is_homing(false)
 	{};
 	void setBulletImageType(BulletImageIdx _bullet_img_type) {
@@ -95,7 +95,6 @@ public:
 	ofVec2f getPosition();
 };
 
-
 class Ball :public ofxBox2dCircle
 {
 private:
@@ -107,7 +106,6 @@ public:
 	void draw();
 	void update();
 };
-
 
 class Brick :public ofxBox2dRect {
 protected:
@@ -123,15 +121,13 @@ public:
 		private_data->bullet_speed_rate = _bullet_speed_rate;
 	}
 	virtual std::list<std::shared_ptr<BulletData>> makeBullet() = 0;
-
 };
-
 
 class Jikinerai_Single1 :public Brick {
 private:
 	std::shared_ptr<MyShip> myship_copy;
 public:
-	Jikinerai_Single1(b2World * _b2dworld, float _x, float _y,float _v_y, std::shared_ptr<MyShip> _myship) {
+	Jikinerai_Single1(b2World * _b2dworld, float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) {
 		this->setPhysics(0.0, 1.0, 0.0);
 		this->setup(_b2dworld, _x, _y, 30, 30);
 		this->setData(new GameObjectData());
@@ -151,4 +147,34 @@ public:
 		);
 		return bullets;
 	};
+};
+
+class NWay_Around_Single1 :public Brick {
+private:
+	int n_way = 32;
+public:
+	NWay_Around_Single1(b2World * _b2dworld, float _x, float _y, float _v_y) {
+		this->setPhysics(0.0, 1.0, 0.0);
+		this->setup(_b2dworld, _x, _y, 30, 30);
+		this->setData(new GameObjectData());
+		this->private_data = (GameObjectData*)getData();
+		this->private_data->object_type = GameObjectData::brick;
+		this->private_data->is_hit = false;
+		this->private_data->can_remove = false;
+		this->private_data->vec = ofVec2f(0, _v_y);
+		this->private_data->bullet_speed_rate = 1.0;
+	}
+	std::list<std::shared_ptr<BulletData>> makeBullet() {
+		std::list<std::shared_ptr<BulletData>> bullets;
+		float speed = 6.0*private_data->bullet_speed_rate;
+		for (int i = 0; i < n_way; i++) {
+			bullets.emplace_back(
+				std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(2*PI*i/n_way), speed*sin(2*PI*i/n_way)), 10, 0, BulletData::round_white)
+			);
+		}
+		return bullets;
+	};
+	void setNWay(int n) {
+		n_way = n;
+	}
 };
