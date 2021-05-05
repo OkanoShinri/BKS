@@ -12,6 +12,9 @@ public:
 
 	virtual ~Scene() {};
 	virtual std::unique_ptr<SettingParameter> getSettingParameter() = 0;
+	virtual SceneIdx getNextScene() = 0;
+	virtual bool canChangeScene() = 0;
+
 	virtual void draw() {};
 	virtual void feadout(int mun) {};
 	virtual void keyPressed(int key) {};
@@ -22,12 +25,6 @@ public:
 	virtual void mouseReleased(int x, int y, int button) {};
 	virtual void update() {};
 	virtual void windowResized(int w, int h) {};
-
-	int transition_counter = 0;
-	int transition_time = 0;
-	bool can_change_scene = false;
-	bool is_transiting = false;
-	SceneIdx nextScene = title_scene;
 };
 
 class QuitScene :public Scene {
@@ -37,6 +34,12 @@ public:
 	void draw() {};
 	std::unique_ptr<SettingParameter> getSettingParameter() {
 		return std::move(setting_parameter);
+	}
+	SceneIdx getNextScene() {
+		return title_scene;
+	}
+	bool canChangeScene() {
+		return false;
 	}
 private:
 	std::unique_ptr<SettingParameter> setting_parameter;
@@ -49,18 +52,29 @@ public:
 	std::unique_ptr<SettingParameter> getSettingParameter() {
 		return std::move(setting_parameter);
 	}
+	SceneIdx getNextScene() {
+		return next_scene;
+	}
+	bool canChangeScene() {
+		return can_change_scene;
+	}
 private:
 	void update();
 	void draw();
 	void keyPressed(int key);
 	void feadout(int mun) {};
 
+	int transition_counter = 0;
+	int transition_time = 0;
+	bool can_change_scene = false;
+	bool is_transiting = false;
 	int choice_idx; //play = 0, setting, quit, 
 	int push_counter;
 
 	ofTrueTypeFont Oranienbaum;
 	ofxJoystick joy_;
 	std::unique_ptr<SettingParameter> setting_parameter;
+	SceneIdx next_scene = play_game_scene;
 };
 
 class SettingScene :public Scene {
@@ -70,16 +84,27 @@ public:
 	std::unique_ptr<SettingParameter> getSettingParameter() {
 		return std::move(setting_parameter);
 	}
+	SceneIdx getNextScene() {
+		return next_scene;
+	}
+	bool canChangeScene() {
+		return can_change_scene;
+	}
 private:
 	void update();
 	void draw();
 	void keyPressed(int key);
 	void feadout(int mun) {};
 
+	int transition_counter = 0;
+	int transition_time = 0;
+	bool can_change_scene = false;
+	bool is_transiting = false;
 	int choice_idx; //play = 0, setting, quit, 
 	int push_counter;
 
 	ofTrueTypeFont Oranienbaum;
 	ofxJoystick joy_;
 	std::unique_ptr<SettingParameter> setting_parameter;
+	SceneIdx next_scene = title_scene;
 };

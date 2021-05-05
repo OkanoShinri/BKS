@@ -15,11 +15,11 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 
 	this->can_change_scene = false;
 	this->is_transiting = false;
-	this->nextScene = Scene::title_scene;
 	this->transition_counter = 0;
 	this->transition_time = 180;
 
 	this->myShip = std::make_unique<MyShip>();
+	myShip->setSEVolume(setting_parameter->getSEVolume());
 
 	/*paddle
 	this->myPaddle = std::make_unique<ofxBox2dRect>();
@@ -269,6 +269,12 @@ void GameScene::draw()
 	ofDrawRectangle(ofGetWidth() * 3 / 4, 0, ofGetWidth() / 4, ofGetHeight());
 
 	ofSetColor(255, 255, 255);
+	std::ostringstream bgm_param;
+	bgm_param << setting_parameter->getBGMVolume();
+	std::ostringstream se_param;
+	se_param << setting_parameter->getSEVolume();
+	ofDrawBitmapString("bgm: "+ bgm_param.str(), 100, ofGetHeight() / 2);
+	ofDrawBitmapString("se:  " + se_param.str(), 100, ofGetHeight() / 2 + 50);
 	//drawHowToPlay(10, 10);
 
 	//-------transition_in------------
@@ -306,6 +312,7 @@ void GameScene::keyPressed(int key) {
 
 	switch (key) {
 	case 'q':
+		
 		this->can_change_scene = true;
 		break;
 	}

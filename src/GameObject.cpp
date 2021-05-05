@@ -290,7 +290,7 @@ void MyShip::update()
 	if (private_data->is_hit) {
 		
 		private_data->is_hit = false;
-		if (life == 0)
+		if (life < 1)
 		{
 			private_data->can_remove = true;
 			return;

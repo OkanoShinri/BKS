@@ -2,16 +2,16 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-	this->current_scene = sceneFactory(Scene::play_game_scene);
+	this->current_scene = sceneFactory(Scene::title_scene);
 	//this->setting_parameter = std::make_shared<SettingParameter>();
 }
 
 //--------------------------------------------------------------
 void ofApp::update() {
-	if (this->current_scene->can_change_scene) {
+	if (this->current_scene->canChangeScene()) {
 		setting_parameter.reset();
 		setting_parameter = std::move(current_scene->getSettingParameter());
-		Scene::SceneIdx next = current_scene->nextScene;
+		Scene::SceneIdx next = current_scene->getNextScene();
 		this->current_scene.reset();
 		this->current_scene = sceneFactory(next);
 	}
