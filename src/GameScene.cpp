@@ -55,7 +55,7 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 
 	this->shot_se = std::make_unique<ofSoundPlayer>();
 	shot_se->load("shotse01.mp3");
-	//this->shot_se->setMultiPlay(true);
+	this->shot_se->setMultiPlay(true);
 
 	this->game_bgm = std::make_unique<ofSoundPlayer>();
 	std::string bgms[] = { "Ž‡‰‘_-’Ç‰¯-_2.mp3","ƒ€ƒXƒJƒŠ‚Ì‰Ô.mp3" };
@@ -230,9 +230,9 @@ void GameScene::draw()
 	{
 		(*it)->update();
 
-		if ((*it)->play_shotse && !shot_se->isPlaying())
+		if (false && (*it)->play_shotse && !shot_se->isPlaying())
 		{
-			//shot_se->play();
+			shot_se->play();
 		}
 
 		float x1 = (*it)->getPosition().x;
@@ -266,7 +266,7 @@ void GameScene::draw()
 	ofDrawRectangle(ofGetWidth() * 3 / 4, 0, ofGetWidth() / 4, ofGetHeight());
 
 	ofSetColor(255, 255, 255);
-	drawHowToPlay(10, 10);
+	//drawHowToPlay(10, 10);
 
 	//-------transition_in------------
 	if (counter < 30)
@@ -332,7 +332,7 @@ void GameScene::b_contactStart(ofxBox2dContactArgs & e)
 
 	if (aData == NULL || bData == NULL)
 	{
-		//wall_hit_se->play();
+		wall_hit_se->play();
 		return;
 	}
 
@@ -340,12 +340,12 @@ void GameScene::b_contactStart(ofxBox2dContactArgs & e)
 	{
 		aData->is_hit = true;
 		bData->is_hit = true;
-		//brick_hit_se->play();
+		brick_hit_se->play();
 	}
 	else if (aData->object_type == GameObjectData::brick && bData->object_type == GameObjectData::ball)
 	{
 		aData->is_hit = true;
 		bData->is_hit = true;
-		//brick_hit_se->play();
+		brick_hit_se->play();
 	}
 }

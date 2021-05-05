@@ -5,7 +5,7 @@ class SettingParameter
 private:
 	bool is_paddlemode = false;
 	bool is_windowmode = true;
-	float bgm_volume = 0.2;
+	float bgm_volume = 0.8;
 	float se_volume = 0.8;
 	int myship_life = 3;
 	int window_width = ofGetWidth();
