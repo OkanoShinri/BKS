@@ -366,3 +366,37 @@ public:
 		n_way = n;
 	}
 };
+
+
+class NWay_Around_Kasoku1 :public Brick {
+private:
+	int n_way = 6;
+public:
+	NWay_Around_Kasoku1(b2World * _b2dworld, float _x, float _y, float _v_y) {
+		this->setPhysics(0.0, 1.0, 0.0);
+		this->setup(_b2dworld, _x, _y, 30, 30);
+		this->setData(new GameObjectData());
+		this->private_data = (GameObjectData*)getData();
+		this->private_data->object_type = GameObjectData::brick;
+		this->private_data->is_hit = false;
+		this->private_data->can_remove = false;
+		this->private_data->vec = ofVec2f(0, _v_y);
+		this->private_data->bullet_speed_rate = 1.0;
+	}
+	std::list<std::shared_ptr<BulletData>> makeBullet() {
+		std::list<std::shared_ptr<BulletData>> bullets;
+		float speed = 4.0*private_data->bullet_speed_rate;
+		for (int j = 0; j < 8; j++) {
+			for (int i = 0; i < n_way; i++) {
+				bullets.emplace_back(
+					std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way), speed*sin(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way)), 10, j*4, BulletData::round_white)
+				);
+				speed *= 1.02;
+			}
+		}
+		return bullets;
+	}
+	void setNWay(int n) {
+		n_way = n;
+	}
+};
