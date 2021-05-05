@@ -288,7 +288,6 @@ void MyShip::update()
 	}
 
 	if (private_data->is_hit) {
-		
 		private_data->is_hit = false;
 		if (life < 1)
 		{

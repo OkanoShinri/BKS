@@ -79,12 +79,12 @@ void TitleScene::update()
 
 void TitleScene::draw()
 {
-	ofVec2f start_pos = ofVec2f(setting_parameter->getWidth() / 4, setting_parameter->getHeight() * 3 / 4);
-	ofVec2f setting_pos = ofVec2f(setting_parameter->getWidth() / 2, setting_parameter->getHeight() * 3 / 4);
-	ofVec2f quit_pos = ofVec2f(setting_parameter->getWidth() * 3 / 4, setting_parameter->getHeight() * 3 / 4);
+	ofVec2f start_pos = ofVec2f(setting_parameter->window_width / 4, setting_parameter->window_height * 3 / 4);
+	ofVec2f setting_pos = ofVec2f(setting_parameter->window_width / 2, setting_parameter->window_height * 3 / 4);
+	ofVec2f quit_pos = ofVec2f(setting_parameter->window_width * 3 / 4, setting_parameter->window_height * 3 / 4);
 
 	ofSetColor(255, 255, 255);
-	ofDrawRectangle(0, 0, setting_parameter->getWidth(), setting_parameter->getHeight());
+	ofDrawRectangle(0, 0, setting_parameter->window_width, setting_parameter->window_height);
 
 	ofSetColor(0, 0, 0);
 	Oranienbaum.drawString("Start", start_pos.x, start_pos.y);
@@ -119,7 +119,7 @@ void TitleScene::draw()
 	if (this->is_transiting)
 	{
 		ofSetColor(255, 255, 255, ofMap(transition_counter, 0, transition_time, 0, 255));
-		ofDrawRectangle(0, 0, setting_parameter->getWidth(), setting_parameter->getHeight());
+		ofDrawRectangle(0, 0, setting_parameter->window_width, setting_parameter->window_height);
 	}
 }
 
@@ -205,45 +205,39 @@ void SettingScene::update()
 	switch (choice_idx)
 	{
 	case 0:
-	{
-		float volume = setting_parameter->getBGMVolume();
-		if (XAxis < -0.5 && 0 < volume) {
-			setting_parameter->setBGMVolume(volume - (joy_.isPushing(0) ? 0.01 : 0.02));
+		if (XAxis < -0.5 && 0 < setting_parameter->bgm_volume) {
+			setting_parameter->bgm_volume -= (joy_.isPushing(0) ? 0.01 : 0.02);
 		}
-		else if (0.5 < XAxis && volume < 1) {
-			setting_parameter->setBGMVolume(volume + (joy_.isPushing(0) ? 0.01 : 0.02));
+		else if (0.5 < XAxis && setting_parameter->bgm_volume < 1) {
+			setting_parameter->bgm_volume += (joy_.isPushing(0) ? 0.01 : 0.02);
 		}
 
-		if (setting_parameter->getBGMVolume() < 0)
+		if (setting_parameter->bgm_volume < 0)
 		{
-			setting_parameter->setBGMVolume(0.0);
+			setting_parameter->bgm_volume = 0.0;
 		}
-		if (1.0 < setting_parameter->getBGMVolume())
+		if (1.0 < setting_parameter->bgm_volume)
 		{
-			setting_parameter->setBGMVolume(1.0);
+			setting_parameter->bgm_volume = 1.0;
 		}
-	}
-	break;
+		break;
 	case 1:
-	{
-		float volume = setting_parameter->getSEVolume();
-		if (XAxis < -0.5 && 0 < volume) {
-			setting_parameter->setSEVolume(volume - (joy_.isPushing(0) ? 0.01 : 0.02));
+		if (XAxis < -0.5 && 0 < setting_parameter->se_volume) {
+			setting_parameter->se_volume -= (joy_.isPushing(0) ? 0.01 : 0.02);
 		}
-		else if (0.5 < XAxis && volume < 1) {
-			setting_parameter->setSEVolume(volume + (joy_.isPushing(0) ? 0.01 : 0.02));
+		else if (0.5 < XAxis && setting_parameter->se_volume < 1) {
+			setting_parameter->se_volume += (joy_.isPushing(0) ? 0.01 : 0.02);
 		}
 
-		if (setting_parameter->getSEVolume() < 0)
+		if (setting_parameter->se_volume < 0)
 		{
-			setting_parameter->setSEVolume(0.0);
+			setting_parameter->se_volume = 0.0;
 		}
-		if (1.0 < setting_parameter->getSEVolume())
+		if (1.0 < setting_parameter->se_volume)
 		{
-			setting_parameter->setSEVolume(1.0);
+			setting_parameter->se_volume = 1.0;
 		}
-	}
-	break;
+		break;
 	case 2:
 		break;
 	case 3:
@@ -255,39 +249,39 @@ void SettingScene::update()
 
 void SettingScene::draw()
 {
-	ofVec2f volume_pos = ofVec2f(setting_parameter->getWidth() / 8, setting_parameter->getHeight() * 3 / 10);
-	ofVec2f se_pos = ofVec2f(setting_parameter->getWidth() / 8, setting_parameter->getHeight() * 4 / 10);
-	ofVec2f windowmode_pos = ofVec2f(setting_parameter->getWidth() / 8, setting_parameter->getHeight() * 5 / 10);
-	ofVec2f return_pos = ofVec2f(setting_parameter->getWidth() / 2 - 30, setting_parameter->getHeight() * 5 / 6);
+	ofVec2f volume_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 3 / 10);
+	ofVec2f se_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 4 / 10);
+	ofVec2f windowmode_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 5 / 10);
+	ofVec2f return_pos = ofVec2f(setting_parameter->window_width / 2 - 30, setting_parameter->window_height * 5 / 6);
 
-	float bar_left = setting_parameter->getWidth() * 4 / 8;
-	float bar_right = setting_parameter->getWidth() * 7 / 8;
+	float bar_left = setting_parameter->window_width * 4 / 8;
+	float bar_right = setting_parameter->window_width * 7 / 8;
 
 	ofSetColor(255, 255, 255);
-	ofDrawRectangle(0, 0, setting_parameter->getWidth(), setting_parameter->getHeight());
+	ofDrawRectangle(0, 0, setting_parameter->window_width, setting_parameter->window_height);
 
 	ofSetColor(0, 0, 0);
-	Oranienbaum.drawString("Setting", setting_parameter->getWidth() / 2 - 30, 50);
+	Oranienbaum.drawString("Setting", setting_parameter->window_width / 2 - 30, 50);
 
 	Oranienbaum.drawString("BGM Volume", volume_pos.x, volume_pos.y);
 	ofSetLineWidth(2.0);
 	ofDrawLine(bar_left, volume_pos.y, bar_right, volume_pos.y);
 	ofNoFill();
 	ofSetLineWidth(3.0);
-	ofDrawCircle(ofMap(setting_parameter->getBGMVolume(), 0, 1, bar_left, bar_right), volume_pos.y, 15);
+	ofDrawCircle(ofMap(setting_parameter->bgm_volume, 0, 1, bar_left, bar_right), volume_pos.y, 15);
 	ofFill();
 	ofSetLineWidth(1.0);
-	ofDrawCircle(ofMap(setting_parameter->getBGMVolume(), 0, 1, bar_left, bar_right), volume_pos.y, 10);
+	ofDrawCircle(ofMap(setting_parameter->bgm_volume, 0, 1, bar_left, bar_right), volume_pos.y, 10);
 
 	Oranienbaum.drawString("SE Volume", se_pos.x, se_pos.y);
 	ofSetLineWidth(2.0);
 	ofDrawLine(bar_left, se_pos.y, bar_right, se_pos.y);
 	ofNoFill();
 	ofSetLineWidth(3.0);
-	ofDrawCircle(ofMap(setting_parameter->getSEVolume(), 0, 1, bar_left, bar_right), se_pos.y, 15);
+	ofDrawCircle(ofMap(setting_parameter->se_volume, 0, 1, bar_left, bar_right), se_pos.y, 15);
 	ofFill();
 	ofSetLineWidth(1.0);
-	ofDrawCircle(ofMap(setting_parameter->getSEVolume(), 0, 1, bar_left, bar_right), se_pos.y, 10);
+	ofDrawCircle(ofMap(setting_parameter->se_volume, 0, 1, bar_left, bar_right), se_pos.y, 10);
 
 	Oranienbaum.drawString("Full Screen", windowmode_pos.x, windowmode_pos.y);
 
@@ -326,7 +320,7 @@ void SettingScene::draw()
 	if (this->is_transiting)
 	{
 		ofSetColor(255, 255, 255, ofMap(transition_counter, 0, transition_time, 0, 255));
-		ofDrawRectangle(0, 0, setting_parameter->getWidth(), setting_parameter->getHeight());
+		ofDrawRectangle(0, 0, setting_parameter->window_width, setting_parameter->window_height);
 	}
 }
 

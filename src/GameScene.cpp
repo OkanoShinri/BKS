@@ -19,7 +19,7 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 	this->transition_time = 180;
 
 	this->myShip = std::make_unique<MyShip>();
-	myShip->setSEVolume(setting_parameter->getSEVolume());
+	myShip->setSEVolume(setting_parameter->se_volume);
 
 	/*paddle
 	this->myPaddle = std::make_unique<ofxBox2dRect>();
@@ -47,17 +47,17 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 
 	wall_hit_se = std::make_unique<ofSoundPlayer>();
 	wall_hit_se->load("se01.mp3");
-	wall_hit_se->setVolume(setting_parameter->getSEVolume());
+	wall_hit_se->setVolume(setting_parameter->se_volume);
 	wall_hit_se->setMultiPlay(true);
 
 	brick_hit_se = std::make_unique<ofSoundPlayer>();
 	brick_hit_se->load("se02.mp3");
-	brick_hit_se->setVolume(setting_parameter->getSEVolume());
+	brick_hit_se->setVolume(setting_parameter->se_volume);
 	brick_hit_se->setMultiPlay(true);
 
 	shot_se = std::make_unique<ofSoundPlayer>();
 	shot_se->load("shotse01.mp3");
-	shot_se->setVolume(setting_parameter->getSEVolume());
+	shot_se->setVolume(setting_parameter->se_volume);
 	shot_se->setMultiPlay(true);
 
 	game_bgm = std::make_unique<ofSoundPlayer>();
@@ -65,7 +65,7 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 	int idx = std::rand() % 2;
 	game_bgm->load(bgms[idx]);
 	game_bgm->setLoop(true);
-	game_bgm->setVolume(setting_parameter->getBGMVolume());
+	game_bgm->setVolume(setting_parameter->bgm_volume);
 	game_bgm->play();
 }
 
@@ -130,7 +130,7 @@ std::unique_ptr<Brick> GameScene::brickFactory(int _id, float _v_y = 0.5)
 void GameScene::update()
 {
 	if (is_transiting) {
-		game_bgm->setVolume(ofMap(transition_counter, 0.0, transition_time, setting_parameter->getBGMVolume(), 0.0));
+		game_bgm->setVolume(ofMap(transition_counter, 0.0, transition_time, setting_parameter->bgm_volume, 0.0));
 
 		if (transition_counter < transition_time) {
 			transition_counter++;
@@ -170,7 +170,6 @@ void GameScene::update()
 		is_transiting = true;
 		//3transition_counter = 0;
 	}
-
 
 	//-------back ground------------
 	back_ground->updata();
@@ -225,7 +224,6 @@ void GameScene::draw()
 	//-------paddle update&draw-------
 	//this->myPaddle->setPosition(this->myShip->getPosition());
 	//this->myPaddle->draw();
-	
 
 	//-------bullets update&draw------
 	ofSetColor(10, 10, 10);
@@ -269,12 +267,17 @@ void GameScene::draw()
 	ofDrawRectangle(ofGetWidth() * 3 / 4, 0, ofGetWidth() / 4, ofGetHeight());
 
 	ofSetColor(255, 255, 255);
-	std::ostringstream bgm_param;
-	bgm_param << setting_parameter->getBGMVolume();
+	if (game_bgm->isPlaying())
+	{
+		std::ostringstream bgm_param;
+		bgm_param << setting_parameter->bgm_volume;
+		ofDrawBitmapString("bgm: " + bgm_param.str(), 100, ofGetHeight() / 2);
+	}
+
 	std::ostringstream se_param;
-	se_param << setting_parameter->getSEVolume();
-	ofDrawBitmapString("bgm: "+ bgm_param.str(), 100, ofGetHeight() / 2);
+	se_param << setting_parameter->se_volume;
 	ofDrawBitmapString("se:  " + se_param.str(), 100, ofGetHeight() / 2 + 50);
+
 	//drawHowToPlay(10, 10);
 
 	//-------transition_in------------
@@ -312,7 +315,7 @@ void GameScene::keyPressed(int key) {
 
 	switch (key) {
 	case 'q':
-		
+
 		this->can_change_scene = true;
 		break;
 	}

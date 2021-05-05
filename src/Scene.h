@@ -8,7 +8,7 @@
 
 class Scene {
 public:
-	enum SceneIdx { quit_game_scene = 0, title_scene, play_game_scene , setting_scene};
+	enum SceneIdx { quit_game_scene = 0, title_scene, play_game_scene, setting_scene };
 
 	virtual ~Scene() {};
 	virtual std::unique_ptr<SettingParameter> getSettingParameter() = 0;
@@ -68,7 +68,7 @@ private:
 	int transition_time = 0;
 	bool can_change_scene = false;
 	bool is_transiting = false;
-	int choice_idx; //play = 0, setting, quit, 
+	int choice_idx; //play = 0, setting, quit,
 	int push_counter;
 
 	ofTrueTypeFont Oranienbaum;
@@ -100,7 +100,7 @@ private:
 	int transition_time = 0;
 	bool can_change_scene = false;
 	bool is_transiting = false;
-	int choice_idx; //play = 0, setting, quit, 
+	int choice_idx; //play = 0, setting, quit,
 	int push_counter;
 
 	ofTrueTypeFont Oranienbaum;
