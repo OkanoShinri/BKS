@@ -138,7 +138,7 @@ void GameScene::update()
 	}
 
 	//-------add brick----------------
-	if (counter % 60 == 15)
+	if (!(counter % 30))
 	{
 		addBrick(0);
 	}
