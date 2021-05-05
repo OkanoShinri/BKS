@@ -300,3 +300,37 @@ public:
 		n_way = n;
 	}
 };
+
+class Jikinerai_NWay_Single2 :public Brick {
+private:
+	std::shared_ptr<MyShip> myship_copy;
+	int n_way = 7;
+public:
+	Jikinerai_NWay_Single2(b2World * _b2dworld, float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) {
+		this->setPhysics(0.0, 1.0, 0.0);
+		this->setup(_b2dworld, _x, _y, 30, 30);
+		this->setData(new GameObjectData());
+		this->private_data = (GameObjectData*)getData();
+		this->private_data->object_type = GameObjectData::brick;
+		this->private_data->is_hit = false;
+		this->private_data->can_remove = false;
+		this->private_data->vec = ofVec2f(0, _v_y);
+		this->private_data->bullet_speed_rate = 1.0;
+		myship_copy = _myship;
+	}
+	std::list<std::shared_ptr<BulletData>> makeBullet() {
+		assert(n_way > 1);
+		std::list<std::shared_ptr<BulletData>> bullets;
+		float speed = 6.0*private_data->bullet_speed_rate;
+		float angle = std::atan2(myship_copy->getPosition().y - this->getPosition().y, myship_copy->getPosition().x - this->getPosition().x);
+		for (int i = 0; i < n_way; i++) {
+			bullets.emplace_back(
+				std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(angle + (i * 60 / (n_way - 1) - 30)*DEG_TO_RAD), speed*sin(angle + (i * 60 / (n_way - 1) - 30)* DEG_TO_RAD)), 10, 0, BulletData::triangle_white)
+			);
+		}
+		return bullets;
+	}
+	void setNWay(int n) {
+		n_way = n;
+	}
+};
