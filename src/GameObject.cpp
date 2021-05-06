@@ -252,6 +252,11 @@ void MyShip::update()
 	if (hit_anime_counter > 0) {
 		hit_anime_counter--;
 	}
+	if (life < 1)
+	{
+		private_data->can_remove = true;
+		return;
+	}
 
 	ofVec2f v = private_data->vec;
 
@@ -290,11 +295,6 @@ void MyShip::update()
 
 	if (private_data->is_hit) {
 		private_data->is_hit = false;
-		if (life < 1)
-		{
-			private_data->can_remove = true;
-			return;
-		}
 		if (hit_anime_counter > 0) {
 			return;
 		}
