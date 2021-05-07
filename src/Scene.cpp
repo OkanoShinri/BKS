@@ -162,6 +162,7 @@ SettingScene::SettingScene(std::unique_ptr<SettingParameter> _setting_parameter)
 
 	choice_idx = 0;
 	push_counter = 0;
+	push_counter2 = 0;
 	Oranienbaum = std::make_unique<ofTrueTypeFont>();
 	Oranienbaum->load("Oranienbaum.ttf", 30);
 
@@ -184,21 +185,6 @@ void SettingScene::update()
 		}
 		return;
 	}
-
-	//---------
-	if (joy_.isPressed(0) && choice_idx == 2) {
-		ofToggleFullscreen();
-		float w = ofGetWindowWidth(), h = ofGetWindowHeight();
-		setting_parameter->scale = std::min(w / 1280, h / 720);
-		setting_parameter->offset_x = (w - 1280 * setting_parameter->scale) / 2;
-		setting_parameter->offset_y = (h - 720 * setting_parameter->scale) / 2;
-	}
-	if (joy_.isPressed(0) && choice_idx == 3) {
-		this->is_transiting = true;
-		this->transition_counter = 0;
-	}
-
-	//---------
 
 	float YAxis = joy_.getAxis(1);
 	float XAxis = joy_.getAxis(0);
@@ -257,8 +243,28 @@ void SettingScene::update()
 		}
 		break;
 	case 2:
+		if (XAxis < -0.5 || 0.5 < XAxis) {
+			push_counter2++;
+		}
+		else
+		{
+			push_counter2 = 0;
+		}
+		
+		if (push_counter2 == 1 || joy_.isPressed(0)) {
+			ofToggleFullscreen();
+			setting_parameter->is_fullscreen = !setting_parameter->is_fullscreen;
+			float w = ofGetWindowWidth(), h = ofGetWindowHeight();
+			setting_parameter->scale = std::min(w / 1280, h / 720);
+			setting_parameter->offset_x = (w - 1280 * setting_parameter->scale) / 2;
+			setting_parameter->offset_y = (h - 720 * setting_parameter->scale) / 2;
+		}
 		break;
 	case 3:
+		if (joy_.isPressed(0)) {
+			this->is_transiting = true;
+			this->transition_counter = 0;
+		}
 		break;
 	default:
 		break;
@@ -272,7 +278,7 @@ void SettingScene::draw()
 
 	ofVec2f volume_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 3 / 10);
 	ofVec2f se_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 4 / 10);
-	ofVec2f windowmode_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 5 / 10);
+	ofVec2f fullscreen_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 5 / 10);
 	ofVec2f return_pos = ofVec2f(setting_parameter->window_width / 2 - 30, setting_parameter->window_height * 5 / 6);
 
 	float bar_left = setting_parameter->window_width * 4 / 8;
@@ -304,7 +310,22 @@ void SettingScene::draw()
 	ofSetLineWidth(1.0);
 	ofDrawCircle(ofMap(setting_parameter->se_volume, 0, 1, bar_left, bar_right), se_pos.y, 10);
 
-	Oranienbaum->drawString("Full Screen", windowmode_pos.x, windowmode_pos.y);
+	Oranienbaum->drawString("Full Screen", fullscreen_pos.x, fullscreen_pos.y);
+	Oranienbaum->drawString("ON", fullscreen_pos.x * 4, fullscreen_pos.y);
+	Oranienbaum->drawString("OFF", fullscreen_pos.x * 6, fullscreen_pos.y);
+	if (setting_parameter->is_fullscreen) {
+		ofDrawRectangle(fullscreen_pos.x * 4-15, fullscreen_pos.y - 40, 75, 50);
+		Oranienbaum->drawString("OFF", fullscreen_pos.x * 6, fullscreen_pos.y);
+		ofSetColor(255, 255, 255);
+		Oranienbaum->drawString("ON", fullscreen_pos.x * 4, fullscreen_pos.y);
+	}
+	else {
+		ofDrawRectangle(fullscreen_pos.x * 6 - 20, fullscreen_pos.y - 40, 100, 50);
+		Oranienbaum->drawString("ON", fullscreen_pos.x * 4, fullscreen_pos.y);
+		ofSetColor(255, 255, 255);
+		Oranienbaum->drawString("OFF", fullscreen_pos.x * 6, fullscreen_pos.y);
+	}
+	ofSetColor(0, 0, 0);
 
 	Oranienbaum->drawString("Return", return_pos.x, return_pos.y);
 
@@ -320,7 +341,7 @@ void SettingScene::draw()
 		ofTranslate(se_pos.x - 30, se_pos.y - size_of_cursor_r, 0);
 		break;
 	case 2:
-		ofTranslate(windowmode_pos.x - 30, windowmode_pos.y - size_of_cursor_r, 0);
+		ofTranslate(fullscreen_pos.x - 30, fullscreen_pos.y - size_of_cursor_r, 0);
 		break;
 	case 3:
 		ofTranslate(return_pos.x - 30, return_pos.y - size_of_cursor_r, 0);

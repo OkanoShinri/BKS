@@ -102,7 +102,7 @@ private:
 	bool can_change_scene = false;
 	bool is_transiting = false;
 	int choice_idx; //play = 0, setting, quit,
-	int push_counter;
+	int push_counter, push_counter2;
 
 	std::unique_ptr<ofTrueTypeFont> Oranienbaum;
 	ofxJoystick joy_;

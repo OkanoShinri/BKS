@@ -3,7 +3,7 @@
 struct SettingParameter
 {
 	bool is_paddlemode = false;
-	bool is_windowmode = true;
+	bool is_fullscreen = false;
 	float bgm_volume = 0.8;
 	float offset_x = 0;
 	float offset_y = 0;
