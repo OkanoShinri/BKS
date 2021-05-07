@@ -196,6 +196,9 @@ void GameScene::update()
 
 void GameScene::draw()
 {
+	//ofTranslate(setting_parameter->offset_x, setting_parameter->offset_y);
+	//ofScale(setting_parameter->scale, setting_parameter->scale);
+
 	ofSetColor(255, 255, 255);
 	//-------back ground------------
 	back_ground->draw();

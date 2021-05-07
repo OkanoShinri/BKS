@@ -82,6 +82,9 @@ void TitleScene::update()
 
 void TitleScene::draw()
 {
+	ofTranslate(setting_parameter->offset_x, setting_parameter->offset_y);
+	ofScale(setting_parameter->scale, setting_parameter->scale);
+
 	ofVec2f start_pos = ofVec2f(setting_parameter->window_width / 4, setting_parameter->window_height * 3 / 4);
 	ofVec2f setting_pos = ofVec2f(setting_parameter->window_width / 2, setting_parameter->window_height * 3 / 4);
 	ofVec2f quit_pos = ofVec2f(setting_parameter->window_width * 3 / 4, setting_parameter->window_height * 3 / 4);
@@ -182,10 +185,20 @@ void SettingScene::update()
 		return;
 	}
 
+	//---------
+	if (joy_.isPressed(0) && choice_idx == 2) {
+		ofToggleFullscreen();
+		float w = ofGetWindowWidth(), h = ofGetWindowHeight();
+		setting_parameter->scale = std::min(w / 1280, h / 720);
+		setting_parameter->offset_x = (w - 1280 * setting_parameter->scale) / 2;
+		setting_parameter->offset_y = (h - 720 * setting_parameter->scale) / 2;
+	}
 	if (joy_.isPressed(0) && choice_idx == 3) {
 		this->is_transiting = true;
 		this->transition_counter = 0;
 	}
+
+	//---------
 
 	float YAxis = joy_.getAxis(1);
 	float XAxis = joy_.getAxis(0);
@@ -254,6 +267,9 @@ void SettingScene::update()
 
 void SettingScene::draw()
 {
+	ofTranslate(setting_parameter->offset_x, setting_parameter->offset_y);
+	ofScale(setting_parameter->scale, setting_parameter->scale);
+
 	ofVec2f volume_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 3 / 10);
 	ofVec2f se_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 4 / 10);
 	ofVec2f windowmode_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 5 / 10);
