@@ -8,7 +8,7 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 	this->box2d_for_breakout->init();
 	this->box2d_for_breakout->enableEvents();
 	this->box2d_for_breakout->setGravity(0, 0);
-	this->box2d_for_breakout->createBounds(ofGetWidth() / 4, 0, ofGetWidth() / 2, ofGetHeight());
+	this->box2d_for_breakout->createBounds(setting_parameter->window_width / 4, 0, setting_parameter->window_width / 2, setting_parameter->window_height);
 	this->box2d_for_breakout->setFPS(30);
 
 	ofAddListener(box2d_for_breakout->contactStartEvents, this, &GameScene::b_contactStart);
@@ -30,10 +30,10 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 
 	this->balls.clear();
 
-	this->balls.emplace_back(std::make_unique<Ball>(this->box2d_for_breakout->getWorld(), ofGetWidth() / 2, 100, 10, 10, 10));
-	if (ofGetWidth() > 1000)
+	this->balls.emplace_back(std::make_unique<Ball>(this->box2d_for_breakout->getWorld(), setting_parameter->window_width / 2, 100, 10, 10, 10));
+	if (setting_parameter->window_width > 1000)
 	{
-		this->balls.emplace_back(std::make_unique<Ball>(this->box2d_for_breakout->getWorld(), ofGetWidth() / 2, 100, 10, -10, 10));
+		this->balls.emplace_back(std::make_unique<Ball>(this->box2d_for_breakout->getWorld(), setting_parameter->window_width / 2, 100, 10, -10, 10));
 	}
 
 	this->bricks.clear();
@@ -80,7 +80,7 @@ void GameScene::addBrick(int id, float _v_y = 0.5)
 {
 	float init_y;
 	if (_v_y < 0) {
-		init_y = ofGetHeight() + 50;
+		init_y = setting_parameter->window_height + 50;
 	}
 	else {
 		init_y = -50;
@@ -196,8 +196,8 @@ void GameScene::update()
 
 void GameScene::draw()
 {
-	//ofTranslate(setting_parameter->offset_x, setting_parameter->offset_y);
-	//ofScale(setting_parameter->scale, setting_parameter->scale);
+	ofTranslate(setting_parameter->offset_x, setting_parameter->offset_y);
+	ofScale(setting_parameter->scale, setting_parameter->scale);
 
 	ofSetColor(255, 255, 255);
 	//-------back ground------------
@@ -286,11 +286,11 @@ void GameScene::draw()
 	//-------side infos---------------
 	//ofSetColor(0, 122, 204);
 	ofSetColor(0, 0, 0);
-	ofDrawRectangle(0, 0, ofGetWidth() / 4, ofGetHeight());
-	ofDrawRectangle(ofGetWidth() * 3 / 4, 0, ofGetWidth() / 4, ofGetHeight());
+	ofDrawRectangle(0, 0, setting_parameter->window_width / 4, setting_parameter->window_height);
+	ofDrawRectangle(setting_parameter->window_width * 3 / 4, 0, setting_parameter->window_width / 4, setting_parameter->window_height);
 	ofSetColor(255, 255, 255);
-	ofDrawRectangle(0, 0, ofGetWidth() / 4 - 5, ofGetHeight());
-	ofDrawRectangle(ofGetWidth() * 3 / 4 + 5, 0, ofGetWidth() / 4, ofGetHeight());
+	ofDrawRectangle(0, 0, setting_parameter->window_width / 4 - 5, setting_parameter->window_height);
+	ofDrawRectangle(setting_parameter->window_width * 3 / 4 + 5, 0, setting_parameter->window_width / 4, setting_parameter->window_height);
 
 	(this->is_transiting) ? ofSetColor(255, 10, 10) : ofSetColor(0, 0, 0);
 	char minute[3];
@@ -299,7 +299,7 @@ void GameScene::draw()
 	sprintf_s(second, "%02d", (finish_time / 60) % 60);
 	char m_second[3];
 	sprintf_s(m_second, "%02d", (int)ofMap(finish_time % 60, 0, 60, 0, 99));
-	verdana->drawString("" + std::string(minute) + ":" + std::string(second) + ":" + std::string(m_second), 50, ofGetHeight() / 4);
+	verdana->drawString("" + std::string(minute) + ":" + std::string(second) + ":" + std::string(m_second), 50, setting_parameter->window_height / 4);
 
 
 	ofSetColor(0, 0, 0);
@@ -307,14 +307,14 @@ void GameScene::draw()
 	{
 		std::ostringstream bgm_param;
 		bgm_param << setting_parameter->bgm_volume;
-		ofDrawBitmapString("bgm: " + bgm_param.str(), 100, ofGetHeight() / 2);
+		ofDrawBitmapString("bgm: " + bgm_param.str(), 100, setting_parameter->window_height / 2);
 	}
 
 	std::ostringstream se_param;
 	se_param << setting_parameter->se_volume;
-	ofDrawBitmapString("se:  " + se_param.str(), 100, ofGetHeight() / 2 + 50);
+	ofDrawBitmapString("se:  " + se_param.str(), 100, setting_parameter->window_height / 2 + 50);
 
-	ofDrawBitmapString(ofToString(ofGetFrameRate()) + "fps", 20, ofGetHeight() - 50);
+	ofDrawBitmapString(ofToString(ofGetFrameRate()) + "fps", 20, setting_parameter->window_height - 50);
 
 	//drawHowToPlay(10, 10);
 
@@ -322,14 +322,14 @@ void GameScene::draw()
 	if (counter < 30)
 	{
 		ofSetColor(255, 255, 255, ofMap(counter, 0, 30, 255, 0));
-		ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+		ofDrawRectangle(0, 0, setting_parameter->window_width, setting_parameter->window_height);
 	}
 
 	//-------transition_out-----------
 	if (this->is_transiting)
 	{
 		ofSetColor(255, 255, 255, ofMap(transition_counter, 0, transition_time, 0, 255));
-		ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+		ofDrawRectangle(0, 0, setting_parameter->window_width, setting_parameter->window_height);
 	}
 	else
 	{

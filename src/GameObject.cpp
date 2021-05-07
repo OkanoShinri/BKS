@@ -22,7 +22,7 @@ void Ball::update()
 	if (abs(getVelocity().x) < 2.0 || abs(getVelocity().y) < 2.0) {
 		setVelocity(10, 10);
 	}
-	if (this->getPosition().y > ofGetHeight() + 10) {
+	if (this->getPosition().y > 720 + 10) {
 		private_data->can_remove = true;
 	}
 }
@@ -155,8 +155,8 @@ void Bullet::update()
 
 	private_data->pos += private_data->vec;
 
-	if (private_data->pos.x < 0 || ofGetWidth() < private_data->pos.x ||
-		private_data->pos.y < -100 || ofGetHeight() + 100 < private_data->pos.y ||
+	if (private_data->pos.x < 0 || 1280 < private_data->pos.x ||
+		private_data->pos.y < -100 || 720 + 100 < private_data->pos.y ||
 		private_data->is_hit
 		)
 	{
@@ -208,7 +208,7 @@ void Brick::update()
 {
 	setPosition(getPosition() + private_data->vec);
 
-	if (this->getPosition().y > ofGetHeight() + 50 || this->getPosition().y < -50 || private_data->is_hit) {
+	if (this->getPosition().y > 720 + 50 || this->getPosition().y < -50 || private_data->is_hit) {
 		//makeBullet();
 		private_data->can_remove = true;
 	}
@@ -231,7 +231,7 @@ MyShip::MyShip() :
 	private_data->object_type = GameObjectData::myship;
 	private_data->is_hit = false;
 	private_data->can_remove = false;
-	private_data->pos = ofVec2f(ofGetWidth() / 2, ofGetHeight() - 100);
+	private_data->pos = ofVec2f(1280 / 2, 720 - 100);
 	private_data->vec = ofVec2f(5, 5);
 
 	joy_.setup(GLFW_JOYSTICK_1);
@@ -280,17 +280,17 @@ void MyShip::update()
 		private_data->pos.x += v.x;
 	}
 
-	if (private_data->pos.x < ofGetWidth() / 4) {
-		private_data->pos.x = ofGetWidth() / 4;
+	if (private_data->pos.x < 1280 / 4) {
+		private_data->pos.x = 1280 / 4;
 	}
-	if (ofGetWidth() * 3 / 4 < private_data->pos.x) {
-		private_data->pos.x = ofGetWidth() * 3 / 4;
+	if (1280 * 3 / 4 < private_data->pos.x) {
+		private_data->pos.x = 1280 * 3 / 4;
 	}
 	if (private_data->pos.y < 0) {
 		private_data->pos.y = 0;
 	}
-	if (ofGetHeight() < private_data->pos.y) {
-		private_data->pos.y = ofGetHeight();
+	if (720 < private_data->pos.y) {
+		private_data->pos.y = 720;
 	}
 
 	if (private_data->is_hit) {
@@ -307,10 +307,10 @@ void MyShip::update()
 
 void MyShip::draw()
 {
-	if (private_data->is_hit) ofDrawBitmapString("Hit", ofGetWidth() / 2, ofGetHeight() - 150);
-	if (life == 3) ofDrawBitmapString("LIFE:3", ofGetWidth() / 2, ofGetHeight() - 100);
-	if (life == 2) ofDrawBitmapString("LIFE:2", ofGetWidth() / 2, ofGetHeight() - 100);
-	if (life == 1) ofDrawBitmapString("LIFE:1", ofGetWidth() / 2, ofGetHeight() - 100);
+	if (private_data->is_hit) ofDrawBitmapString("Hit", 1280 / 2, 720 - 150);
+	if (life == 3) ofDrawBitmapString("LIFE:3", 1280 / 2, 720 - 100);
+	if (life == 2) ofDrawBitmapString("LIFE:2", 1280 / 2, 720 - 100);
+	if (life == 1) ofDrawBitmapString("LIFE:1", 1280 / 2, 720 - 100);
 
 	ofNoFill();
 
