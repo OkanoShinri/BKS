@@ -299,7 +299,7 @@ void GameScene::draw()
 	sprintf_s(second, "%02d", (finish_time / 60) % 60);
 	char m_second[3];
 	sprintf_s(m_second, "%02d", (int)ofMap(finish_time % 60, 0, 60, 0, 99));
-	verdana->drawString("" + std::string(minute) + ":" + std::string(second) + ":" + std::string(m_second), 50, setting_parameter->window_height / 4);
+	verdana->drawString("" + std::string(minute) + ":" + std::string(second) + "." + std::string(m_second), 50, setting_parameter->window_height / 4);
 
 
 	ofSetColor(0, 0, 0);
