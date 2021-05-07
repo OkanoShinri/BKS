@@ -94,7 +94,7 @@ void TitleScene::draw()
 
 	ofSetColor(0, 0, 0);
 	Oranienbaum_big->drawString("**Insert Title**", 400, 300);
-	Oranienbaum->drawString("ver 0.91", 850, 350);
+	Oranienbaum->drawString("ver 0.92", 850, 350);
 	Oranienbaum->drawString("Start", start_pos.x, start_pos.y);
 	Oranienbaum->drawString("Setting", setting_pos.x, setting_pos.y);
 	Oranienbaum->drawString("Quit", quit_pos.x, quit_pos.y);
