@@ -14,7 +14,7 @@ void BackGroundImage::draw()
 {
 	images.back()->draw(0, 0);
 	ofSetColor(255, 255, 255, 200);
-	ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+	ofDrawRectangle(0, 0, 1280, 720);
 }
 
 void BackGroundImage::changeImage()
