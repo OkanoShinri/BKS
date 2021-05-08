@@ -12,6 +12,7 @@ struct SettingParameter
 	int myship_life = 3;
 	int window_height = 720;//ofGetHeight();
 	int window_width = 1280;//ofGetWidth();
+	std::string version = "0.93";
 };
 
 /*

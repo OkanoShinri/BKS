@@ -96,6 +96,7 @@ private:
 	void draw();
 	void keyPressed(int key);
 	void feadout(int mun) {};
+	void toggle_fullscreen();
 
 	int transition_counter = 0;
 	int transition_time = 0;

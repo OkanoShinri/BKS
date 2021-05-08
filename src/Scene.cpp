@@ -94,7 +94,9 @@ void TitleScene::draw()
 
 	ofSetColor(0, 0, 0);
 	Oranienbaum_big->drawString("**Insert Title**", 400, 300);
-	Oranienbaum->drawString("ver 0.92", 850, 350);
+	std::string version = "ver ";
+	version += setting_parameter->version;
+	Oranienbaum->drawString(version, 850, 350);
 	Oranienbaum->drawString("Start", start_pos.x, start_pos.y);
 	Oranienbaum->drawString("Setting", setting_pos.x, setting_pos.y);
 	Oranienbaum->drawString("Quit", quit_pos.x, quit_pos.y);
@@ -252,12 +254,7 @@ void SettingScene::update()
 		}
 		
 		if (push_counter2 == 1 || joy_.isPressed(0)) {
-			ofToggleFullscreen();
-			setting_parameter->is_fullscreen = !setting_parameter->is_fullscreen;
-			float w = ofGetWindowWidth(), h = ofGetWindowHeight();
-			setting_parameter->scale = std::min(w / 1280, h / 720);
-			setting_parameter->offset_x = (w - 1280 * setting_parameter->scale) / 2;
-			setting_parameter->offset_y = (h - 720 * setting_parameter->scale) / 2;
+			toggle_fullscreen();
 		}
 		break;
 	case 3:
@@ -374,14 +371,61 @@ void SettingScene::keyPressed(int key)
 
 	switch (key) {
 	case OF_KEY_DOWN:
-		choice_idx = (choice_idx + 3) % 4;
-		break;
-	case OF_KEY_UP:
 		choice_idx = (choice_idx + 1) % 4;
 		break;
+	case OF_KEY_UP:
+		choice_idx = (choice_idx + 3) % 4;
+		break;
+	case OF_KEY_LEFT:
+		if (choice_idx==0)
+		{
+			setting_parameter->bgm_volume -= 0.02;
+		}
+		else if (choice_idx == 1)
+		{
+			setting_parameter->se_volume -= 0.02;
+		}
+		else if (choice_idx == 2)
+		{
+			toggle_fullscreen();
+		}
+		break;
+	case OF_KEY_RIGHT:
+		if (choice_idx == 0)
+		{
+			setting_parameter->bgm_volume += 0.02;
+		}
+		else if (choice_idx == 1)
+		{
+			setting_parameter->se_volume += 0.02;
+		}
+		else if (choice_idx == 2)
+		{
+			toggle_fullscreen();
+		}
+		break;
 	case OF_KEY_RETURN:
-		this->is_transiting = true;
-		this->transition_counter = 0;
+		if (choice_idx == 2)
+		{
+			toggle_fullscreen();
+		}
+		else if (choice_idx == 3)
+		{
+			this->is_transiting = true;
+			this->transition_counter = 0;
+		}
+		
 		break;
 	}
+}
+
+void SettingScene::toggle_fullscreen()
+{
+	assert(setting_parameter != nullptr);
+	ofToggleFullscreen();
+	setting_parameter->is_fullscreen = !setting_parameter->is_fullscreen;
+	float w = ofGetWindowWidth(), h = ofGetWindowHeight();
+	setting_parameter->scale = std::min(w / 1280, h / 720);
+	setting_parameter->offset_x = (w - 1280 * setting_parameter->scale) / 2;
+	setting_parameter->offset_y = (h - 720 * setting_parameter->scale) / 2;
 }
