@@ -194,13 +194,13 @@ void SettingScene::update()
 	if (YAxis < -0.7) {
 		push_counter++;
 		if (push_counter == 1 || (60 < push_counter && (push_counter % 10 == 0))) {
-			choice_idx = (choice_idx + 3) % 4;
+			choice_idx = (choice_idx + 4) % 5;
 		}
 	}
 	else if (0.7 < YAxis) {
 		push_counter++;
 		if (push_counter == 1 || (60 < push_counter && (push_counter % 10 == 0))) {
-			choice_idx = (choice_idx + 1) % 4;
+			choice_idx = (choice_idx + 1) % 5;
 		}
 	}
 	else
@@ -258,6 +258,8 @@ void SettingScene::update()
 		}
 		break;
 	case 3:
+		break;
+	case 4:
 		if (joy_.isPressed(0)) {
 			this->is_transiting = true;
 			this->transition_counter = 0;
@@ -276,6 +278,7 @@ void SettingScene::draw()
 	ofVec2f volume_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 3 / 10);
 	ofVec2f se_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 4 / 10);
 	ofVec2f fullscreen_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 5 / 10);
+	ofVec2f num_of_balls_pos = ofVec2f(setting_parameter->window_width / 8, setting_parameter->window_height * 6 / 10);
 	ofVec2f return_pos = ofVec2f(setting_parameter->window_width / 2 - 30, setting_parameter->window_height * 5 / 6);
 
 	float bar_left = setting_parameter->window_width * 4 / 8;
@@ -318,12 +321,13 @@ void SettingScene::draw()
 	}
 	else {
 		ofDrawRectangle(fullscreen_pos.x * 6 - 20, fullscreen_pos.y - 40, 100, 50);
-		Oranienbaum->drawString("ON", fullscreen_pos.x * 4, fullscreen_pos.y);
+		Oranienbaum->drawString("ON", bar_left, fullscreen_pos.y);
 		ofSetColor(255, 255, 255);
 		Oranienbaum->drawString("OFF", fullscreen_pos.x * 6, fullscreen_pos.y);
 	}
 	ofSetColor(0, 0, 0);
 
+	Oranienbaum->drawString("Number of balls", num_of_balls_pos.x, num_of_balls_pos.y);
 	Oranienbaum->drawString("Return", return_pos.x, return_pos.y);
 
 	//----------cursor----------------
@@ -341,6 +345,9 @@ void SettingScene::draw()
 		ofTranslate(fullscreen_pos.x - 30, fullscreen_pos.y - size_of_cursor_r, 0);
 		break;
 	case 3:
+		ofTranslate(num_of_balls_pos.x - 30, num_of_balls_pos.y - size_of_cursor_r, 0);
+		break;
+	case 4:
 		ofTranslate(return_pos.x - 30, return_pos.y - size_of_cursor_r, 0);
 		break;
 
@@ -371,10 +378,10 @@ void SettingScene::keyPressed(int key)
 
 	switch (key) {
 	case OF_KEY_DOWN:
-		choice_idx = (choice_idx + 1) % 4;
+		choice_idx = (choice_idx + 1) % 5;
 		break;
 	case OF_KEY_UP:
-		choice_idx = (choice_idx + 3) % 4;
+		choice_idx = (choice_idx + 4) % 5;
 		break;
 	case OF_KEY_LEFT:
 		if (choice_idx==0)
@@ -409,7 +416,7 @@ void SettingScene::keyPressed(int key)
 		{
 			toggle_fullscreen();
 		}
-		else if (choice_idx == 3)
+		else if (choice_idx == 4)
 		{
 			this->is_transiting = true;
 			this->transition_counter = 0;
