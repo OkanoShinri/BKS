@@ -30,10 +30,11 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 
 	this->balls.clear();
 
-	this->balls.emplace_back(std::make_unique<Ball>(this->box2d_for_breakout->getWorld(), setting_parameter->window_width / 2, 100, 10, 10, 10));
-	if (setting_parameter->window_width > 1000)
+	float ball_speed = 10.0;
+	for (int i = 0; i < setting_parameter->num_ball; i++)
 	{
-		this->balls.emplace_back(std::make_unique<Ball>(this->box2d_for_breakout->getWorld(), setting_parameter->window_width / 2, 100, 10, -10, 10));
+		this->balls.emplace_back(std::make_unique<Ball>(this->box2d_for_breakout->getWorld(), setting_parameter->window_width / 2, 100+10*i, 10,
+			ball_speed*cos(2 * PI*i / setting_parameter->num_ball), ball_speed*sin(2 * PI * i / setting_parameter->num_ball)));
 	}
 
 	this->bricks.clear();
