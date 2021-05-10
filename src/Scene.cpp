@@ -258,6 +258,21 @@ void SettingScene::update()
 		}
 		break;
 	case 3:
+		if (XAxis < -0.5) {
+			setting_parameter->num_ball--;
+		}
+		else if (0.5 < XAxis) {
+			setting_parameter->num_ball++;
+		}
+
+		if (setting_parameter->num_ball < 0)
+		{
+			setting_parameter->num_ball = 0;
+		}
+		if (setting_parameter->MAX_BALL < setting_parameter->num_ball)
+		{
+			setting_parameter->num_ball = setting_parameter->MAX_BALL;
+		}
 		break;
 	case 4:
 		if (joy_.isPressed(0)) {
@@ -438,9 +453,9 @@ void SettingScene::keyPressed(int key)
 	{
 		setting_parameter->num_ball = 1;
 	}
-	else if (10 < setting_parameter->num_ball)
+	else if (setting_parameter->MAX_BALL < setting_parameter->num_ball)
 	{
-		setting_parameter->num_ball = 10;
+		setting_parameter->num_ball = setting_parameter->MAX_BALL;
 	}
 
 }
