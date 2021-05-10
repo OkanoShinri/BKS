@@ -10,8 +10,9 @@ struct SettingParameter
 	float scale = 1.0;
 	float se_volume = 0.8;
 	int myship_life = 3;
-	int window_height = 720;//ofGetHeight();
-	int window_width = 1280;//ofGetWidth();
+	int window_height = 720;
+	int window_width = 1280;
+	int num_ball = 3;
 	std::string version = "0.93";
 };
 
