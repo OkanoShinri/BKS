@@ -328,6 +328,8 @@ void SettingScene::draw()
 	ofSetColor(0, 0, 0);
 
 	Oranienbaum->drawString("Number of balls", num_of_balls_pos.x, num_of_balls_pos.y);
+	Oranienbaum->drawString(std::to_string(setting_parameter->num_ball), num_of_balls_pos.x*5, num_of_balls_pos.y);
+	
 	Oranienbaum->drawString("Return", return_pos.x, return_pos.y);
 
 	//----------cursor----------------
@@ -396,6 +398,10 @@ void SettingScene::keyPressed(int key)
 		{
 			toggle_fullscreen();
 		}
+		else if (choice_idx == 3)
+		{
+			setting_parameter->num_ball--;
+		}
 		break;
 	case OF_KEY_RIGHT:
 		if (choice_idx == 0)
@@ -409,6 +415,10 @@ void SettingScene::keyPressed(int key)
 		else if (choice_idx == 2)
 		{
 			toggle_fullscreen();
+		}
+		else if (choice_idx == 3)
+		{
+			setting_parameter->num_ball++;
 		}
 		break;
 	case OF_KEY_RETURN:
@@ -424,6 +434,15 @@ void SettingScene::keyPressed(int key)
 		
 		break;
 	}
+	if (setting_parameter->num_ball < 1)
+	{
+		setting_parameter->num_ball = 1;
+	}
+	else if (10 < setting_parameter->num_ball)
+	{
+		setting_parameter->num_ball = 10;
+	}
+
 }
 
 void SettingScene::toggle_fullscreen()
