@@ -181,7 +181,6 @@ Brick::~Brick()
 
 void Brick::draw()
 {
-
 	ofPushMatrix();
 
 	ofTranslate(private_data->pos);

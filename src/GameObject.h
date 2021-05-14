@@ -7,7 +7,6 @@ class GameObject {
 public:
 };
 
-
 struct GameObjectData {
 	enum ObjTypeIdx { myship = 0, ball, brick, bullet, effect };
 	ObjTypeIdx object_type;
@@ -18,7 +17,6 @@ struct GameObjectData {
 	float r;
 	float bullet_speed_rate = 1.0;
 };
-
 
 class BulletData {
 public:
@@ -40,7 +38,6 @@ public:
 		is_homing = _is_homing;
 	}
 };
-
 
 class Bullet
 {
@@ -64,7 +61,6 @@ public:
 		return private_data->r;
 	}
 };
-
 
 class MyShip
 {
@@ -99,26 +95,25 @@ public:
 	ofVec2f getPosition();
 };
 
-
 class Ball
 {
 private:
 	std::unique_ptr<GameObjectData> private_data;
 public:
-	Ball( float _x, float _y, float _radius, float _v_x, float _v_y);
+	Ball(float _x, float _y, float _radius, float _v_x, float _v_y);
 	~Ball();
 	bool canRemove();
 	void draw();
 	void update();
 };
 
-
 class Brick
 {
 protected:
 	std::unique_ptr<GameObjectData> private_data;
 	ofVec2f pos;
-	int width, height;
+	int width = 30;
+	int height = 30;
 	std::shared_ptr<MyShip> myship_copy;
 public:
 	Brick(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship);
@@ -133,14 +128,12 @@ public:
 	virtual std::list<std::shared_ptr<BulletData>> makeBullet() = 0;
 };
 
-
 class Jikinerai_Single1 :public Brick {
 private:
-	int width = 30;
-	int height = 30;
+
 public:
-	Jikinerai_Single1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship):
-		Brick(_x,  _y,  _v_y,  _myship){}
+	Jikinerai_Single1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
+		Brick(_x, _y, _v_y, _myship) {}
 	std::list<std::shared_ptr<BulletData>> makeBullet() {
 		std::list<std::shared_ptr<BulletData>> bullets;
 		float speed = 6.0*private_data->bullet_speed_rate;
@@ -151,11 +144,9 @@ public:
 	}
 };
 
-
 class NWay_Around_Single1 :public Brick {
 private:
-	int width = 30;
-	int height = 30;
+
 	int n_way = 16;
 public:
 	NWay_Around_Single1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
@@ -175,11 +166,9 @@ public:
 	}
 };
 
-
 class Jikinerai_Multiple1 :public Brick {
 private:
-	int width = 30;
-	int height = 30;
+
 public:
 	Jikinerai_Multiple1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
 		Brick(_x, _y, _v_y, _myship) {}
@@ -195,11 +184,9 @@ public:
 	}
 };
 
-
 class FourWay_Guruguru1 :public Brick {
 private:
-	int width = 30;
-	int height = 30;
+
 public:
 	FourWay_Guruguru1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
 		Brick(_x, _y, _v_y, _myship) {}
@@ -217,11 +204,9 @@ public:
 	}
 };
 
-
 class NWay_Around_Multiple1 :public Brick {
 private:
-	int width = 30;
-	int height = 30;
+
 	int n_way = 8;
 public:
 	NWay_Around_Multiple1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
@@ -243,11 +228,9 @@ public:
 	}
 };
 
-
 class Jikinerai_NWay_Single1 :public Brick {
 private:
-	int width = 30;
-	int height = 30;
+
 	int n_way = 5;
 public:
 	Jikinerai_NWay_Single1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
@@ -269,11 +252,9 @@ public:
 	}
 };
 
-
 class Jikinerai_NWay_Single2 :public Brick {
 private:
-	int width = 30;
-	int height = 30;
+
 	int n_way = 7;
 public:
 	Jikinerai_NWay_Single2(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
@@ -295,11 +276,9 @@ public:
 	}
 };
 
-
 class NWay_Around_Big1 :public Brick {
 private:
-	int width = 30;
-	int height = 30;
+
 	int n_way = 12;
 public:
 	NWay_Around_Big1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
@@ -321,11 +300,9 @@ public:
 	}
 };
 
-
 class NWay_Around_Kasoku1 :public Brick {
 private:
-	int width = 30;
-	int height = 30;
+
 	int n_way = 6;
 public:
 	NWay_Around_Kasoku1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
@@ -336,7 +313,7 @@ public:
 		for (int j = 0; j < 8; j++) {
 			for (int i = 0; i < n_way; i++) {
 				bullets.emplace_back(
-					std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way), speed*sin(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way)), 10, j*4, BulletData::round_white)
+					std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way), speed*sin(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way)), 10, j * 4, BulletData::round_white)
 				);
 				speed *= 1.02;
 			}
@@ -348,14 +325,15 @@ public:
 	}
 };
 
-
 class Hibachi1 :public Brick {
 private:
-	int width = 50;
-	int height = 50;
+
 public:
 	Hibachi1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
-		Brick(_x, _y, _v_y, _myship) {}
+		Brick(_x, _y, _v_y, _myship) {
+		width = 50;
+		height = 50;
+	}
 	std::list<std::shared_ptr<BulletData>> makeBullet() {
 		std::list<std::shared_ptr<BulletData>> bullets;
 		float speed = 9.0*private_data->bullet_speed_rate;
@@ -366,7 +344,7 @@ public:
 						std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(j  * DEG_TO_RAD + 2 * PI*i / 12), speed*sin(j * DEG_TO_RAD + 2 * PI*i / 12)), 15, j * 2, BulletData::round_black)
 					);
 					bullets.emplace_back(
-						std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(-j  * DEG_TO_RAD + 2 * PI*i / 12), speed*sin(-j * DEG_TO_RAD + 2 * PI*i / 12)), 12, j * 2, BulletData::round_black)
+						std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(-j * DEG_TO_RAD + 2 * PI*i / 12), speed*sin(-j * DEG_TO_RAD + 2 * PI*i / 12)), 12, j * 2, BulletData::round_black)
 					);
 				}
 			}
