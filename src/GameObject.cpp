@@ -1,16 +1,14 @@
 #include "GameObject.h"
 
-Ball::Ball(b2World * _b2dworld, float _x, float _y, float _radius, float _v_x, float _v_y)
+Ball::Ball(float _x, float _y, float _radius, float _v_x, float _v_y)
 {
-	setPhysics(1.0, 1.0, 0.0);
-	setup(_b2dworld, _x, _y, _radius);
-	setVelocity(_v_x, _v_y);
-
-	this->setData(new GameObjectData());
-	private_data = (GameObjectData*)getData();
+	private_data = make_unique<GameObjectData>();
 	private_data->object_type = GameObjectData::ball;
 	private_data->is_hit = false;
 	private_data->can_remove = false;
+	private_data->pos = ofVec2f(_x, _y);
+	private_data->vec = ofVec2f(_v_x, _v_y);
+	private_data->r = _radius;
 }
 
 Ball::~Ball()
@@ -19,12 +17,7 @@ Ball::~Ball()
 
 void Ball::update()
 {
-	if (abs(getVelocity().x) < 2.0 || abs(getVelocity().y) < 2.0) {
-		setVelocity(10, 10);
-	}
-	if (this->getPosition().y > 720 + 10) {
-		private_data->can_remove = true;
-	}
+	private_data->pos += private_data->vec;
 }
 
 bool Ball::canRemove()
@@ -35,10 +28,10 @@ bool Ball::canRemove()
 void Ball::draw()
 {
 	ofPushMatrix();
-	ofTranslate(this->getPosition());
+	ofTranslate(private_data->pos);
 	ofFill();
 	ofSetColor(255, 214, 98);
-	ofDrawCircle(0, 0, getRadius());
+	ofDrawCircle(0, 0, private_data->r);
 	ofPopMatrix();
 }
 
@@ -171,20 +164,27 @@ ofVec2f Bullet::getPosition()
 	return private_data->pos;
 }
 
-Brick::Brick()
-{}
+Brick::Brick(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship)
+{
+	private_data = make_unique<GameObjectData>();
+	private_data->object_type = GameObjectData::brick;
+	private_data->is_hit = false;
+	private_data->can_remove = false;
+	private_data->pos = ofVec2f(_x, _y);
+	private_data->vec = ofVec2f(0, _v_y);
+	private_data->bullet_speed_rate = 1.0;
+	myship_copy = _myship;
+}
 
 Brick::~Brick()
 {}
 
 void Brick::draw()
 {
-	float width = getWidth();
-	float height = getHeight();
 
 	ofPushMatrix();
 
-	ofTranslate(getPosition());
+	ofTranslate(private_data->pos);
 	ofSetColor(255, 214, 98);
 	ofSetLineWidth(2.0);
 	ofDrawLine(-width / 2, -height / 2, width / 2, -height / 2);
@@ -206,9 +206,9 @@ void Brick::draw()
 
 void Brick::update()
 {
-	setPosition(getPosition() + private_data->vec);
+	private_data->pos += private_data->vec;
 
-	if (this->getPosition().y > 720 + 50 || this->getPosition().y < -50 || private_data->is_hit) {
+	if (this->private_data->pos.y > 720 + 50 || this->private_data->pos.y < -50 || private_data->is_hit) {
 		//makeBullet();
 		private_data->can_remove = true;
 	}

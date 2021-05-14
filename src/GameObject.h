@@ -100,12 +100,12 @@ public:
 };
 
 
-class Ball :public ofxBox2dCircle
+class Ball
 {
 private:
-	GameObjectData* private_data;
+	std::unique_ptr<GameObjectData> private_data;
 public:
-	Ball(b2World * _b2dworld, float _x, float _y, float _radius, float _v_x, float _v_y);
+	Ball( float _x, float _y, float _radius, float _v_x, float _v_y);
 	~Ball();
 	bool canRemove();
 	void draw();
@@ -113,11 +113,15 @@ public:
 };
 
 
-class Brick :public ofxBox2dRect {
+class Brick
+{
 protected:
-	GameObjectData* private_data;
+	std::unique_ptr<GameObjectData> private_data;
+	ofVec2f pos;
+	int width, height;
+	std::shared_ptr<MyShip> myship_copy;
 public:
-	Brick();
+	Brick(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship);
 	~Brick();
 	bool canRemove();
 	bool isHit();
@@ -132,25 +136,16 @@ public:
 
 class Jikinerai_Single1 :public Brick {
 private:
-	std::shared_ptr<MyShip> myship_copy;
+	int width = 30;
+	int height = 30;
 public:
-	Jikinerai_Single1(b2World * _b2dworld, float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) {
-		this->setPhysics(0.0, 1.0, 0.0);
-		this->setup(_b2dworld, _x, _y, 30, 30);
-		this->setData(new GameObjectData());
-		this->private_data = (GameObjectData*)getData();
-		this->private_data->object_type = GameObjectData::brick;
-		this->private_data->is_hit = false;
-		this->private_data->can_remove = false;
-		this->private_data->vec = ofVec2f(0, _v_y);
-		this->private_data->bullet_speed_rate = 1.0;
-		myship_copy = _myship;
-	}
+	Jikinerai_Single1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship):
+		Brick(_x,  _y,  _v_y,  _myship){}
 	std::list<std::shared_ptr<BulletData>> makeBullet() {
 		std::list<std::shared_ptr<BulletData>> bullets;
 		float speed = 6.0*private_data->bullet_speed_rate;
 		bullets.emplace_back(
-			std::make_unique<BulletData>(getPosition(), ofVec2f(speed*(myship_copy->getPosition() - this->getPosition()).normalize()), 10, 0, BulletData::triangle_black)
+			std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*(myship_copy->getPosition() - this->private_data->pos).normalize()), 10, 0, BulletData::triangle_black)
 		);
 		return bullets;
 	}
@@ -159,25 +154,18 @@ public:
 
 class NWay_Around_Single1 :public Brick {
 private:
+	int width = 30;
+	int height = 30;
 	int n_way = 16;
 public:
-	NWay_Around_Single1(b2World * _b2dworld, float _x, float _y, float _v_y) {
-		this->setPhysics(0.0, 1.0, 0.0);
-		this->setup(_b2dworld, _x, _y, 30, 30);
-		this->setData(new GameObjectData());
-		this->private_data = (GameObjectData*)getData();
-		this->private_data->object_type = GameObjectData::brick;
-		this->private_data->is_hit = false;
-		this->private_data->can_remove = false;
-		this->private_data->vec = ofVec2f(0, _v_y);
-		this->private_data->bullet_speed_rate = 1.0;
-	}
+	NWay_Around_Single1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
+		Brick(_x, _y, _v_y, _myship) {}
 	std::list<std::shared_ptr<BulletData>> makeBullet() {
 		std::list<std::shared_ptr<BulletData>> bullets;
 		float speed = 6.0*private_data->bullet_speed_rate;
 		for (int i = 0; i < n_way; i++) {
 			bullets.emplace_back(
-				std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(2 * PI*i / n_way), speed*sin(2 * PI*i / n_way)), 10, 0, BulletData::round_white)
+				std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(2 * PI*i / n_way), speed*sin(2 * PI*i / n_way)), 10, 0, BulletData::round_white)
 			);
 		}
 		return bullets;
@@ -190,26 +178,17 @@ public:
 
 class Jikinerai_Multiple1 :public Brick {
 private:
-	std::shared_ptr<MyShip> myship_copy;
+	int width = 30;
+	int height = 30;
 public:
-	Jikinerai_Multiple1(b2World * _b2dworld, float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) {
-		this->setPhysics(0.0, 1.0, 0.0);
-		this->setup(_b2dworld, _x, _y, 30, 30);
-		this->setData(new GameObjectData());
-		this->private_data = (GameObjectData*)getData();
-		this->private_data->object_type = GameObjectData::brick;
-		this->private_data->is_hit = false;
-		this->private_data->can_remove = false;
-		this->private_data->vec = ofVec2f(0, _v_y);
-		this->private_data->bullet_speed_rate = 1.0;
-		myship_copy = _myship;
-	}
+	Jikinerai_Multiple1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
+		Brick(_x, _y, _v_y, _myship) {}
 	std::list<std::shared_ptr<BulletData>> makeBullet() {
 		std::list<std::shared_ptr<BulletData>> bullets;
 		float speed = 6.0*private_data->bullet_speed_rate;
 		for (int i = 0; i < 8; i++) {
 			bullets.emplace_back(
-				std::make_unique<BulletData>(getPosition(), ofVec2f(speed*(myship_copy->getPosition() - this->getPosition()).normalize()), 10, i * 4, BulletData::triangle_black)
+				std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*(myship_copy->getPosition() - this->private_data->pos).normalize()), 10, i * 4, BulletData::triangle_black)
 			);
 		}
 		return bullets;
@@ -219,25 +198,18 @@ public:
 
 class FourWay_Guruguru1 :public Brick {
 private:
+	int width = 30;
+	int height = 30;
 public:
-	FourWay_Guruguru1(b2World * _b2dworld, float _x, float _y, float _v_y) {
-		this->setPhysics(0.0, 1.0, 0.0);
-		this->setup(_b2dworld, _x, _y, 30, 30);
-		this->setData(new GameObjectData());
-		this->private_data = (GameObjectData*)getData();
-		this->private_data->object_type = GameObjectData::brick;
-		this->private_data->is_hit = false;
-		this->private_data->can_remove = false;
-		this->private_data->vec = ofVec2f(0, _v_y);
-		this->private_data->bullet_speed_rate = 1.0;
-	}
+	FourWay_Guruguru1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
+		Brick(_x, _y, _v_y, _myship) {}
 	std::list<std::shared_ptr<BulletData>> makeBullet() {
 		std::list<std::shared_ptr<BulletData>> bullets;
 		float speed = 4.0*private_data->bullet_speed_rate;
 		for (int j = 0; j < 16; j++) {
 			for (int i = 0; i < 4; i++) {
 				bullets.emplace_back(
-					std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(j * 19 * DEG_TO_RAD + 2 * PI* i / 4), speed*sin(j * 19 * DEG_TO_RAD + 2 * PI* i / 4)), 10, j * 2, BulletData::needle_white)
+					std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(j * 19 * DEG_TO_RAD + 2 * PI* i / 4), speed*sin(j * 19 * DEG_TO_RAD + 2 * PI* i / 4)), 10, j * 2, BulletData::needle_white)
 				);
 			}
 		}
@@ -248,26 +220,19 @@ public:
 
 class NWay_Around_Multiple1 :public Brick {
 private:
+	int width = 30;
+	int height = 30;
 	int n_way = 8;
 public:
-	NWay_Around_Multiple1(b2World * _b2dworld, float _x, float _y, float _v_y) {
-		this->setPhysics(0.0, 1.0, 0.0);
-		this->setup(_b2dworld, _x, _y, 30, 30);
-		this->setData(new GameObjectData());
-		this->private_data = (GameObjectData*)getData();
-		this->private_data->object_type = GameObjectData::brick;
-		this->private_data->is_hit = false;
-		this->private_data->can_remove = false;
-		this->private_data->vec = ofVec2f(0, _v_y);
-		this->private_data->bullet_speed_rate = 1.0;
-	}
+	NWay_Around_Multiple1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
+		Brick(_x, _y, _v_y, _myship) {}
 	std::list<std::shared_ptr<BulletData>> makeBullet() {
 		std::list<std::shared_ptr<BulletData>> bullets;
 		float speed = 4.0*private_data->bullet_speed_rate;
 		for (int j = 0; j < 4; j++) {
 			for (int i = 0; i < n_way; i++) {
 				bullets.emplace_back(
-					std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way), speed*sin(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way)), 10, j, BulletData::round_white)
+					std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way), speed*sin(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way)), 10, j, BulletData::round_white)
 				);
 			}
 		}
@@ -281,29 +246,20 @@ public:
 
 class Jikinerai_NWay_Single1 :public Brick {
 private:
-	std::shared_ptr<MyShip> myship_copy;
+	int width = 30;
+	int height = 30;
 	int n_way = 5;
 public:
-	Jikinerai_NWay_Single1(b2World * _b2dworld, float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) {
-		this->setPhysics(0.0, 1.0, 0.0);
-		this->setup(_b2dworld, _x, _y, 30, 30);
-		this->setData(new GameObjectData());
-		this->private_data = (GameObjectData*)getData();
-		this->private_data->object_type = GameObjectData::brick;
-		this->private_data->is_hit = false;
-		this->private_data->can_remove = false;
-		this->private_data->vec = ofVec2f(0, _v_y);
-		this->private_data->bullet_speed_rate = 1.0;
-		myship_copy = _myship;
-	}
+	Jikinerai_NWay_Single1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
+		Brick(_x, _y, _v_y, _myship) {}
 	std::list<std::shared_ptr<BulletData>> makeBullet() {
 		assert(n_way > 1);
 		std::list<std::shared_ptr<BulletData>> bullets;
 		float speed = 6.0*private_data->bullet_speed_rate;
-		float angle = std::atan2(myship_copy->getPosition().y - this->getPosition().y, myship_copy->getPosition().x - this->getPosition().x);
+		float angle = std::atan2(myship_copy->getPosition().y - this->private_data->pos.y, myship_copy->getPosition().x - this->private_data->pos.x);
 		for (int i = 0; i < n_way; i++) {
 			bullets.emplace_back(
-				std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(angle + (i * 30 / (n_way - 1) - 15)*DEG_TO_RAD), speed*sin(angle + (i * 30 / (n_way - 1) - 15)* DEG_TO_RAD)), 10, 0, BulletData::triangle_white)
+				std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(angle + (i * 30 / (n_way - 1) - 15)*DEG_TO_RAD), speed*sin(angle + (i * 30 / (n_way - 1) - 15)* DEG_TO_RAD)), 10, 0, BulletData::triangle_white)
 			);
 		}
 		return bullets;
@@ -316,29 +272,20 @@ public:
 
 class Jikinerai_NWay_Single2 :public Brick {
 private:
-	std::shared_ptr<MyShip> myship_copy;
+	int width = 30;
+	int height = 30;
 	int n_way = 7;
 public:
-	Jikinerai_NWay_Single2(b2World * _b2dworld, float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) {
-		this->setPhysics(0.0, 1.0, 0.0);
-		this->setup(_b2dworld, _x, _y, 30, 30);
-		this->setData(new GameObjectData());
-		this->private_data = (GameObjectData*)getData();
-		this->private_data->object_type = GameObjectData::brick;
-		this->private_data->is_hit = false;
-		this->private_data->can_remove = false;
-		this->private_data->vec = ofVec2f(0, _v_y);
-		this->private_data->bullet_speed_rate = 1.0;
-		myship_copy = _myship;
-	}
+	Jikinerai_NWay_Single2(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
+		Brick(_x, _y, _v_y, _myship) {}
 	std::list<std::shared_ptr<BulletData>> makeBullet() {
 		assert(n_way > 1);
 		std::list<std::shared_ptr<BulletData>> bullets;
 		float speed = 6.0*private_data->bullet_speed_rate;
-		float angle = std::atan2(myship_copy->getPosition().y - this->getPosition().y, myship_copy->getPosition().x - this->getPosition().x);
+		float angle = std::atan2(myship_copy->getPosition().y - this->private_data->pos.y, myship_copy->getPosition().x - this->private_data->pos.x);
 		for (int i = 0; i < n_way; i++) {
 			bullets.emplace_back(
-				std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(angle + (i * 60 / (n_way - 1) - 30)*DEG_TO_RAD), speed*sin(angle + (i * 60 / (n_way - 1) - 30)* DEG_TO_RAD)), 10, 0, BulletData::triangle_white)
+				std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(angle + (i * 60 / (n_way - 1) - 30)*DEG_TO_RAD), speed*sin(angle + (i * 60 / (n_way - 1) - 30)* DEG_TO_RAD)), 10, 0, BulletData::triangle_white)
 			);
 		}
 		return bullets;
@@ -351,26 +298,19 @@ public:
 
 class NWay_Around_Big1 :public Brick {
 private:
+	int width = 30;
+	int height = 30;
 	int n_way = 12;
 public:
-	NWay_Around_Big1(b2World * _b2dworld, float _x, float _y, float _v_y) {
-		this->setPhysics(0.0, 1.0, 0.0);
-		this->setup(_b2dworld, _x, _y, 30, 30);
-		this->setData(new GameObjectData());
-		this->private_data = (GameObjectData*)getData();
-		this->private_data->object_type = GameObjectData::brick;
-		this->private_data->is_hit = false;
-		this->private_data->can_remove = false;
-		this->private_data->vec = ofVec2f(0, _v_y);
-		this->private_data->bullet_speed_rate = 1.0;
-	}
+	NWay_Around_Big1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
+		Brick(_x, _y, _v_y, _myship) {}
 	std::list<std::shared_ptr<BulletData>> makeBullet() {
 		std::list<std::shared_ptr<BulletData>> bullets;
 		float speed = 5.0*private_data->bullet_speed_rate;
 		for (int i = 0; i < n_way; i++) {
 			for (int j = 0; j < 4; j++) {
 				bullets.emplace_back(
-					std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(2 * PI*i / n_way), speed*sin(2 * PI*i / n_way)), 25 - j * 5, j * 10, BulletData::round_white)
+					std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(2 * PI*i / n_way), speed*sin(2 * PI*i / n_way)), 25 - j * 5, j * 10, BulletData::round_white)
 				);
 			}
 		}
@@ -384,26 +324,19 @@ public:
 
 class NWay_Around_Kasoku1 :public Brick {
 private:
+	int width = 30;
+	int height = 30;
 	int n_way = 6;
 public:
-	NWay_Around_Kasoku1(b2World * _b2dworld, float _x, float _y, float _v_y) {
-		this->setPhysics(0.0, 1.0, 0.0);
-		this->setup(_b2dworld, _x, _y, 30, 30);
-		this->setData(new GameObjectData());
-		this->private_data = (GameObjectData*)getData();
-		this->private_data->object_type = GameObjectData::brick;
-		this->private_data->is_hit = false;
-		this->private_data->can_remove = false;
-		this->private_data->vec = ofVec2f(0, _v_y);
-		this->private_data->bullet_speed_rate = 1.0;
-	}
+	NWay_Around_Kasoku1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
+		Brick(_x, _y, _v_y, _myship) {}
 	std::list<std::shared_ptr<BulletData>> makeBullet() {
 		std::list<std::shared_ptr<BulletData>> bullets;
 		float speed = 4.0*private_data->bullet_speed_rate;
 		for (int j = 0; j < 8; j++) {
 			for (int i = 0; i < n_way; i++) {
 				bullets.emplace_back(
-					std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way), speed*sin(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way)), 10, j*4, BulletData::round_white)
+					std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way), speed*sin(j * 6 * DEG_TO_RAD + 2 * PI*i / n_way)), 10, j*4, BulletData::round_white)
 				);
 				speed *= 1.02;
 			}
@@ -418,18 +351,11 @@ public:
 
 class Hibachi1 :public Brick {
 private:
+	int width = 50;
+	int height = 50;
 public:
-	Hibachi1(b2World * _b2dworld, float _x, float _y, float _v_y) {
-		this->setPhysics(0.0, 1.0, 0.0);
-		this->setup(_b2dworld, _x, _y, 30, 30);
-		this->setData(new GameObjectData());
-		this->private_data = (GameObjectData*)getData();
-		this->private_data->object_type = GameObjectData::brick;
-		this->private_data->is_hit = false;
-		this->private_data->can_remove = false;
-		this->private_data->vec = ofVec2f(0, _v_y);
-		this->private_data->bullet_speed_rate = 1.0;
-	}
+	Hibachi1(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship) :
+		Brick(_x, _y, _v_y, _myship) {}
 	std::list<std::shared_ptr<BulletData>> makeBullet() {
 		std::list<std::shared_ptr<BulletData>> bullets;
 		float speed = 9.0*private_data->bullet_speed_rate;
@@ -437,10 +363,10 @@ public:
 			for (int i = 0; i < 12; i++) {
 				if (j % 8 < 6) {
 					bullets.emplace_back(
-						std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(j  * DEG_TO_RAD + 2 * PI*i / 12), speed*sin(j * DEG_TO_RAD + 2 * PI*i / 12)), 15, j * 2, BulletData::round_black)
+						std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(j  * DEG_TO_RAD + 2 * PI*i / 12), speed*sin(j * DEG_TO_RAD + 2 * PI*i / 12)), 15, j * 2, BulletData::round_black)
 					);
 					bullets.emplace_back(
-						std::make_unique<BulletData>(getPosition(), ofVec2f(speed*cos(-j  * DEG_TO_RAD + 2 * PI*i / 12), speed*sin(-j * DEG_TO_RAD + 2 * PI*i / 12)), 12, j * 2, BulletData::round_black)
+						std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*cos(-j  * DEG_TO_RAD + 2 * PI*i / 12), speed*sin(-j * DEG_TO_RAD + 2 * PI*i / 12)), 12, j * 2, BulletData::round_black)
 					);
 				}
 			}

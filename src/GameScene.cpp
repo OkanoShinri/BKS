@@ -4,15 +4,6 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 {
 	setting_parameter = std::move(_setting_parameter);
 
-	this->box2d_for_breakout = std::make_shared<ofxBox2d>();
-	this->box2d_for_breakout->init();
-	this->box2d_for_breakout->enableEvents();
-	this->box2d_for_breakout->setGravity(0, 0);
-	this->box2d_for_breakout->createBounds(setting_parameter->window_width / 4, 0, setting_parameter->window_width / 2, setting_parameter->window_height);
-	this->box2d_for_breakout->setFPS(30);
-
-	ofAddListener(box2d_for_breakout->contactStartEvents, this, &GameScene::b_contactStart);
-
 	this->can_change_scene = false;
 	this->is_transiting = false;
 	this->transition_counter = 0;
@@ -30,11 +21,11 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 
 	this->balls.clear();
 
-	float ball_speed = 10.0;
+	float ball_speed = 2.0;
 	for (int i = 0; i < setting_parameter->num_ball; i++)
 	{
-		this->balls.emplace_back(std::make_unique<Ball>(this->box2d_for_breakout->getWorld(), setting_parameter->window_width / 2, 100+10*i, 10,
-			ball_speed*cos(2 * PI*i / setting_parameter->num_ball), ball_speed*sin(2 * PI * i / setting_parameter->num_ball)));
+		this->balls.emplace_back(std::make_unique<Ball>(setting_parameter->window_width / 2, 100 + 10 * i, 10,
+			ball_speed*cos(45 * DEG_TO_RAD + 2 * PI*i / setting_parameter->num_ball), ball_speed*sin(45 * DEG_TO_RAD + 2 * PI * i / setting_parameter->num_ball)));
 	}
 
 	this->bricks.clear();
@@ -90,41 +81,40 @@ void GameScene::addBrick(int id, float _v_y = 0.5)
 	switch (id)
 	{
 	case 0:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 1:
-		this->bricks.emplace_front(std::make_unique<NWay_Around_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<NWay_Around_Single1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 2:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_NWay_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_NWay_Single1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 3:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_NWay_Single2>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_NWay_Single2>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 4:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_Multiple1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_Multiple1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 5:
-		this->bricks.emplace_front(std::make_unique<NWay_Around_Multiple1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<NWay_Around_Multiple1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 6:
-		this->bricks.emplace_front(std::make_unique<NWay_Around_Big1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<NWay_Around_Big1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 7:
-		this->bricks.emplace_front(std::make_unique<FourWay_Guruguru1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<FourWay_Guruguru1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 8:
-		this->bricks.emplace_front(std::make_unique<NWay_Around_Kasoku1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<NWay_Around_Kasoku1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 9:
-		this->bricks.emplace_front(std::make_unique<Hibachi1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<Hibachi1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	default:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	}
 }
-
 
 void GameScene::update()
 {
@@ -141,28 +131,27 @@ void GameScene::update()
 	}
 
 	//-------add brick----------------
-	if (!(counter % 30))
+	if (!(counter % 120))
 	{
 		addBrick(0);
 	}
 	if (counter < 1800)
 	{
-		if (counter % 120 == 0)
+		if (counter % 240 == 0)
 		{
 			addBrick(std::rand() % 3);
 		}
-		
 	}
 	else if (counter < 3600)
 	{
-		if (counter % 90 == 0)
+		if (counter % 240 == 0)
 		{
 			addBrick(std::rand() % 4 + 2);
 		}
 	}
 	else if (counter < 7200)
 	{
-		if (counter % 90 == 0)
+		if (counter % 180 == 0)
 		{
 			addBrick(std::rand() % 3 + 5);
 		}
@@ -178,10 +167,7 @@ void GameScene::update()
 	if (counter > 1200 && ((counter % 360) == 0)) {
 		this->bricks.emplace_back(std::move(brickFactory((int)ofRandom(3), true)));
 	}*/
-
-	//-------box2d update-------------
-	this->box2d_for_breakout->update();
-
+	
 	//-------myship update------------
 	this->myShip->update();
 	if (myShip->canRemove()) {
@@ -302,7 +288,6 @@ void GameScene::draw()
 	sprintf_s(m_second, "%02d", (int)ofMap(finish_time % 60, 0, 60, 0, 99));
 	verdana->drawString("" + std::string(minute) + ":" + std::string(second) + "." + std::string(m_second), 50, setting_parameter->window_height / 4);
 
-
 	ofSetColor(0, 0, 0);
 	if (game_bgm->isPlaying())
 	{
@@ -375,33 +360,4 @@ void GameScene::keyReleased(int key)
 void GameScene::mouseMoved(int x, int y)
 {
 	//this->myShip->mouseMoved(x, y);
-}
-
-void GameScene::b_contactStart(ofxBox2dContactArgs & e)
-{
-	if (e.a == NULL || e.b == NULL) {
-		return;
-	}
-
-	GameObjectData* aData = (GameObjectData*)e.a->GetBody()->GetUserData();
-	GameObjectData* bData = (GameObjectData*)e.b->GetBody()->GetUserData();
-
-	if (aData == NULL || bData == NULL)
-	{
-		wall_hit_se->play();
-		return;
-	}
-
-	if (aData->object_type == GameObjectData::ball && bData->object_type == GameObjectData::brick)
-	{
-		aData->is_hit = true;
-		bData->is_hit = true;
-		brick_hit_se->play();
-	}
-	else if (aData->object_type == GameObjectData::brick && bData->object_type == GameObjectData::ball)
-	{
-		aData->is_hit = true;
-		bData->is_hit = true;
-		brick_hit_se->play();
-	}
 }
