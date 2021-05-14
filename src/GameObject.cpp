@@ -383,10 +383,6 @@ void MyShip::update()
 
 void MyShip::draw()
 {
-	if (private_data->is_hit) ofDrawBitmapString("Hit", 1280 / 2, 720 - 150);
-	if (life == 3) ofDrawBitmapString("LIFE:3", 1280 / 2, 720 - 100);
-	if (life == 2) ofDrawBitmapString("LIFE:2", 1280 / 2, 720 - 100);
-	if (life == 1) ofDrawBitmapString("LIFE:1", 1280 / 2, 720 - 100);
 
 	ofNoFill();
 
