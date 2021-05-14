@@ -12,13 +12,6 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 	this->myShip = std::make_shared<MyShip>();
 	myShip->setSEVolume(setting_parameter->se_volume);
 
-	/*paddle
-	this->myPaddle = std::make_unique<ofxBox2dRect>();
-	this->myPaddle->setPhysics(1.0, 1.0, 0.0);
-	this->myPaddle->setup(this->box2d_for_breakout->getWorld(), myShip->getPosition().x - 100, myShip->getPosition().y - 25, 200, 50);
-	this->myPaddle->setFixedRotation(true);
-	*/
-
 	this->balls.clear();
 
 	for (int i = 0; i < setting_parameter->num_ball; i++)
@@ -191,13 +184,16 @@ void GameScene::draw()
 
 	//-------bricks update&draw--------
 	ofSetColor(255, 100, 100);
-	for (auto it = this->bricks.begin(); it != this->bricks.end();)
+	for (auto it_brick = this->bricks.begin(); it_brick != this->bricks.end();)
 	{
-		(*it)->update();
-		if ((*it)->canRemove()) {
-			if ((*it)->isHit()) {
+		(*it_brick)->update();
+
+		for (auto it_ball = this->balls.begin(); it_ball != this->balls.end(); ++it_ball)
+		{
+			if ((*it_ball)->isHit((*it_brick)->getPosition(), (*it_brick)->getShape()))
+			{
 				// destroy brick(s) and make bullets
-				for (auto & bullet_data : (*it)->makeBullet()) {
+				for (auto & bullet_data : (*it_brick)->makeBullet()) {
 					if (non_active_bullets.empty()) {
 						break;
 					}
@@ -205,13 +201,16 @@ void GameScene::draw()
 					non_active_bullets.pop_back();
 					active_bullets.back()->set(bullet_data);
 				}
+				(*it_brick)->setRemoveable();
 			}
-			it = this->bricks.erase(it);
+		}
+		if ((*it_brick)->canRemove()) {
+			it_brick = this->bricks.erase(it_brick);
 		}
 		else {
-			(*it)->draw();
-			(*it)->setBulletSpeedRate(1 + counter * 0.0001);
-			++it;
+			(*it_brick)->draw();
+			(*it_brick)->setBulletSpeedRate(1 + counter * 0.0001);
+			++it_brick;
 		}
 	}
 

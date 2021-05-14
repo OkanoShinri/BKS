@@ -108,6 +108,10 @@ public:
 	bool canRemove();
 	void draw();
 	void update();
+	ofVec2f getPosition() {
+		return private_data->pos;
+	}
+	bool isHit(ofVec2f pos, ofVec2f shape);
 };
 
 class Brick
@@ -115,8 +119,8 @@ class Brick
 protected:
 	std::unique_ptr<GameObjectData> private_data;
 	ofVec2f pos;
-	int width = 30;
-	int height = 30;
+	int width = 60;
+	int height = 60;
 	std::shared_ptr<MyShip> myship_copy;
 public:
 	Brick(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship);
@@ -127,6 +131,15 @@ public:
 	void update();
 	void setBulletSpeedRate(float _bullet_speed_rate) {
 		private_data->bullet_speed_rate = _bullet_speed_rate;
+	}
+	void setRemoveable() {
+		private_data->can_remove = true;
+	}
+	ofVec2f getPosition() {
+		return private_data->pos;
+	}
+	ofVec2f getShape() {
+		return ofVec2f(width, height);
 	}
 	virtual std::list<std::shared_ptr<BulletData>> makeBullet() = 0;
 };

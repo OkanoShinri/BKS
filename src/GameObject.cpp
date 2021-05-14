@@ -49,6 +49,15 @@ void Ball::update()
 	}
 }
 
+bool Ball::isHit(ofVec2f pos, ofVec2f shape)
+{
+	if ((pos-private_data->pos).length()<42)
+	{
+		return true;
+	}
+	return false;
+}
+
 bool Ball::canRemove()
 {
 	return private_data->can_remove;
