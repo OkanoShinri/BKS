@@ -4,15 +4,6 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 {
 	setting_parameter = std::move(_setting_parameter);
 
-	this->box2d_for_breakout = std::make_shared<ofxBox2d>();
-	this->box2d_for_breakout->init();
-	this->box2d_for_breakout->enableEvents();
-	this->box2d_for_breakout->setGravity(0, 0);
-	this->box2d_for_breakout->createBounds(setting_parameter->window_width / 4, 0, setting_parameter->window_width / 2, setting_parameter->window_height);
-	this->box2d_for_breakout->setFPS(30);
-
-	ofAddListener(box2d_for_breakout->contactStartEvents, this, &GameScene::b_contactStart);
-
 	this->can_change_scene = false;
 	this->is_transiting = false;
 	this->transition_counter = 0;
@@ -21,20 +12,17 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 	this->myShip = std::make_shared<MyShip>();
 	myShip->setSEVolume(setting_parameter->se_volume);
 
-	/*paddle
-	this->myPaddle = std::make_unique<ofxBox2dRect>();
-	this->myPaddle->setPhysics(1.0, 1.0, 0.0);
-	this->myPaddle->setup(this->box2d_for_breakout->getWorld(), myShip->getPosition().x - 100, myShip->getPosition().y - 25, 200, 50);
-	this->myPaddle->setFixedRotation(true);
-	*/
-
 	this->balls.clear();
 
-	float ball_speed = 10.0;
+	int speed = 10;
 	for (int i = 0; i < setting_parameter->num_ball; i++)
 	{
-		this->balls.emplace_back(std::make_unique<Ball>(this->box2d_for_breakout->getWorld(), setting_parameter->window_width / 2, 100+10*i, 10,
-			ball_speed*cos(2 * PI*i / setting_parameter->num_ball), ball_speed*sin(2 * PI * i / setting_parameter->num_ball)));
+		this->balls.emplace_back(std::make_unique<Ball>(
+			ofVec2f(setting_parameter->window_width / 2, 100),
+			ofVec2f(cos(45 * DEG_TO_RAD + 2 * PI*i / setting_parameter->num_ball), sin(45 * DEG_TO_RAD + 2 * PI*i / setting_parameter->num_ball))*speed,
+			setting_parameter->window_width,
+			setting_parameter->window_height,
+			setting_parameter->se_volume));
 	}
 
 	this->bricks.clear();
@@ -47,16 +35,6 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 	verdana = std::make_unique<ofTrueTypeFont>();
 	verdana->load("verdana.ttf", 30);
 	back_ground = std::make_unique<BackGroundImage>();
-
-	wall_hit_se = std::make_unique<ofSoundPlayer>();
-	wall_hit_se->load("se01.mp3");
-	wall_hit_se->setVolume(setting_parameter->se_volume);
-	wall_hit_se->setMultiPlay(true);
-
-	brick_hit_se = std::make_unique<ofSoundPlayer>();
-	brick_hit_se->load("se02.mp3");
-	brick_hit_se->setVolume(setting_parameter->se_volume);
-	brick_hit_se->setMultiPlay(true);
 
 	shot_se = std::make_unique<ofSoundPlayer>();
 	shot_se->load("shotse01.mp3");
@@ -90,41 +68,40 @@ void GameScene::addBrick(int id, float _v_y = 0.5)
 	switch (id)
 	{
 	case 0:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 1:
-		this->bricks.emplace_front(std::make_unique<NWay_Around_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<NWay_Around_Single1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 2:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_NWay_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_NWay_Single1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 3:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_NWay_Single2>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_NWay_Single2>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 4:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_Multiple1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_Multiple1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 5:
-		this->bricks.emplace_front(std::make_unique<NWay_Around_Multiple1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<NWay_Around_Multiple1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 6:
-		this->bricks.emplace_front(std::make_unique<NWay_Around_Big1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<NWay_Around_Big1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 7:
-		this->bricks.emplace_front(std::make_unique<FourWay_Guruguru1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<FourWay_Guruguru1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 8:
-		this->bricks.emplace_front(std::make_unique<NWay_Around_Kasoku1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<NWay_Around_Kasoku1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	case 9:
-		this->bricks.emplace_front(std::make_unique<Hibachi1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5));
+		this->bricks.emplace_front(std::make_unique<Hibachi1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	default:
-		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(this->box2d_for_breakout->getWorld(), ofRandom(setting_parameter->window_width/4,setting_parameter->window_width*3/4), -50, 0.5, myShip));
+		this->bricks.emplace_front(std::make_unique<Jikinerai_Single1>(ofRandom(setting_parameter->window_width / 4, setting_parameter->window_width * 3 / 4), -50, 0.5, myShip));
 		break;
 	}
 }
-
 
 void GameScene::update()
 {
@@ -151,7 +128,7 @@ void GameScene::update()
 		{
 			addBrick(std::rand() % 3);
 		}
-		
+
 	}
 	else if (counter < 3600)
 	{
@@ -174,19 +151,26 @@ void GameScene::update()
 			addBrick(std::rand() % 3 + 7);
 		}
 	}
-	/*
-	if (counter > 1200 && ((counter % 360) == 0)) {
-		this->bricks.emplace_back(std::move(brickFactory((int)ofRandom(3), true)));
-	}*/
-
-	//-------box2d update-------------
-	this->box2d_for_breakout->update();
 
 	//-------myship update------------
 	this->myShip->update();
 	if (myShip->canRemove()) {
 		is_transiting = true;
 		//transition_counter = 0;
+	}
+
+	//-------ball updata---------
+	ofSetColor(255, 214, 98);
+	for (auto it = this->balls.begin(); it != this->balls.end();)
+	{
+		(*it)->update();
+		if ((*it)->canRemove())
+		{
+			it = this->balls.erase(it);
+		}
+		else {
+			++it;
+		}
 	}
 
 	//-------back ground------------
@@ -206,13 +190,18 @@ void GameScene::draw()
 
 	//-------bricks update&draw--------
 	ofSetColor(255, 100, 100);
-	for (auto it = this->bricks.begin(); it != this->bricks.end();)
+	for (auto it_brick = this->bricks.begin(); it_brick != this->bricks.end();)
 	{
-		(*it)->update();
-		if ((*it)->canRemove()) {
-			if ((*it)->isHit()) {
+		if (!is_transiting) {
+			(*it_brick)->update();
+		}
+
+		for (auto it_ball = this->balls.begin(); it_ball != this->balls.end(); ++it_ball)
+		{
+			if ((*it_ball)->isHit((*it_brick)->getPosition(), (*it_brick)->getShape()))
+			{
 				// destroy brick(s) and make bullets
-				for (auto & bullet_data : (*it)->makeBullet()) {
+				for (auto & bullet_data : (*it_brick)->makeBullet()) {
 					if (non_active_bullets.empty()) {
 						break;
 					}
@@ -220,26 +209,24 @@ void GameScene::draw()
 					non_active_bullets.pop_back();
 					active_bullets.back()->set(bullet_data);
 				}
+				(*it_brick)->setRemoveable();
 			}
-			it = this->bricks.erase(it);
+		}
+		if ((*it_brick)->canRemove()) {
+			it_brick = this->bricks.erase(it_brick);
 		}
 		else {
-			(*it)->draw();
-			(*it)->setBulletSpeedRate(1 + counter * 0.0001);
-			++it;
+			(*it_brick)->draw();
+			(*it_brick)->setBulletSpeedRate(1 + counter * 0.0001);
+			++it_brick;
 		}
 	}
 
-	//-------ball update&draw---------
+	//-------ball draw---------
 	ofSetColor(255, 214, 98);
 	for (auto it = this->balls.begin(); it != this->balls.end();)
 	{
-		(*it)->update();
-		if ((*it)->canRemove())
 		{
-			it = this->balls.erase(it);
-		}
-		else {
 			(*it)->draw();
 			++it;
 		}
@@ -301,7 +288,6 @@ void GameScene::draw()
 	char m_second[3];
 	sprintf_s(m_second, "%02d", (int)ofMap(finish_time % 60, 0, 60, 0, 99));
 	verdana->drawString("" + std::string(minute) + ":" + std::string(second) + "." + std::string(m_second), 50, setting_parameter->window_height / 4);
-
 
 	ofSetColor(0, 0, 0);
 	if (game_bgm->isPlaying())
@@ -375,33 +361,4 @@ void GameScene::keyReleased(int key)
 void GameScene::mouseMoved(int x, int y)
 {
 	//this->myShip->mouseMoved(x, y);
-}
-
-void GameScene::b_contactStart(ofxBox2dContactArgs & e)
-{
-	if (e.a == NULL || e.b == NULL) {
-		return;
-	}
-
-	GameObjectData* aData = (GameObjectData*)e.a->GetBody()->GetUserData();
-	GameObjectData* bData = (GameObjectData*)e.b->GetBody()->GetUserData();
-
-	if (aData == NULL || bData == NULL)
-	{
-		wall_hit_se->play();
-		return;
-	}
-
-	if (aData->object_type == GameObjectData::ball && bData->object_type == GameObjectData::brick)
-	{
-		aData->is_hit = true;
-		bData->is_hit = true;
-		brick_hit_se->play();
-	}
-	else if (aData->object_type == GameObjectData::brick && bData->object_type == GameObjectData::ball)
-	{
-		aData->is_hit = true;
-		bData->is_hit = true;
-		brick_hit_se->play();
-	}
 }

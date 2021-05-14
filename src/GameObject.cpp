@@ -1,16 +1,28 @@
 #include "GameObject.h"
 
-Ball::Ball(b2World * _b2dworld, float _x, float _y, float _radius, float _v_x, float _v_y)
+Ball::Ball(ofVec2f pos, ofVec2f vec, int width, int height, float _se_volume)
 {
-	setPhysics(1.0, 1.0, 0.0);
-	setup(_b2dworld, _x, _y, _radius);
-	setVelocity(_v_x, _v_y);
-
-	this->setData(new GameObjectData());
-	private_data = (GameObjectData*)getData();
+	private_data = make_unique<GameObjectData>();
 	private_data->object_type = GameObjectData::ball;
 	private_data->is_hit = false;
 	private_data->can_remove = false;
+	private_data->pos = pos;
+	private_data->vec = vec;
+	speed = vec.length();
+	private_data->r = radius;
+
+	window_width = width;
+	window_height = height;
+
+	brick_hit_se = std::make_unique<ofSoundPlayer>();
+	brick_hit_se->load("se02.mp3");
+	brick_hit_se->setVolume(_se_volume);
+	brick_hit_se->setMultiPlay(true);
+
+	wall_hit_se = std::make_unique<ofSoundPlayer>();
+	wall_hit_se->load("se01.mp3");
+	wall_hit_se->setVolume(_se_volume);
+	wall_hit_se->setMultiPlay(true);
 }
 
 Ball::~Ball()
@@ -19,12 +31,66 @@ Ball::~Ball()
 
 void Ball::update()
 {
-	if (abs(getVelocity().x) < 2.0 || abs(getVelocity().y) < 2.0) {
-		setVelocity(10, 10);
+	private_data->pos += private_data->vec;
+
+	if ((private_data->pos.x - private_data->r) < window_width / 4) {
+		private_data->pos.x = window_width / 4 + private_data->r;
+		private_data->vec.x *= -1;
+		wall_hit_se->play();
 	}
-	if (this->getPosition().y > 720 + 10) {
-		private_data->can_remove = true;
+	else if (window_width * 3 / 4 < (private_data->pos.x + private_data->r)) {
+		private_data->pos.x = window_width * 3 / 4 - private_data->r;
+		private_data->vec.x *= -1;
+		wall_hit_se->play();
 	}
+	else if ((private_data->pos.y - private_data->r) < 0) {
+		private_data->pos.y = private_data->r;
+		private_data->vec.y *= -1;
+		wall_hit_se->play();
+	}
+	else if (window_height < (private_data->pos.y + private_data->r)) {
+		private_data->pos.y = window_height - private_data->r;
+		private_data->vec.y *= -1;
+		wall_hit_se->play();
+	}
+}
+
+bool Ball::isHit(ofVec2f pos, ofVec2f shape)
+{
+	if (
+		pos.x - shape.x / 2 - private_data->r < private_data->pos.x && private_data->pos.x < pos.x + shape.x / 2 + private_data->r
+		&&
+		pos.y - shape.y / 2 - private_data->r < private_data->pos.y && private_data->pos.y < pos.y + shape.y / 2 + private_data->r
+		)
+	{
+		if (pos.x - shape.x / 2 < private_data->pos.x && private_data->pos.x < pos.x + shape.x / 2)
+		{
+			private_data->vec.y *= -1;
+		}
+		else if (pos.y - shape.y / 2 < private_data->pos.y && private_data->pos.y < pos.y + shape.y / 2)
+		{
+			private_data->vec.x *= -1;
+		}
+		else if (private_data->pos.x < pos.x - shape.x / 2 && private_data->pos.y < pos.y - shape.y / 2)
+		{
+			private_data->vec = ofVec2f(-speed, -speed);
+		}
+		else if (pos.x + shape.x / 2 < private_data->pos.x && private_data->pos.y < pos.y - shape.y / 2)
+		{
+			private_data->vec = ofVec2f(speed, -speed);
+		}
+		else if (pos.x + shape.x / 2 < private_data->pos.x &&  pos.y + shape.y / 2 < private_data->pos.y)
+		{
+			private_data->vec = ofVec2f(speed, speed);
+		}
+		else if (private_data->pos.x < pos.x - shape.x / 2 && pos.y + shape.y / 2 < private_data->pos.y)
+		{
+			private_data->vec = ofVec2f(-speed, speed);
+		}
+		brick_hit_se->play();
+		return true;
+	}
+	return false;
 }
 
 bool Ball::canRemove()
@@ -35,10 +101,14 @@ bool Ball::canRemove()
 void Ball::draw()
 {
 	ofPushMatrix();
-	ofTranslate(this->getPosition());
+	ofTranslate(private_data->pos);
 	ofFill();
 	ofSetColor(255, 214, 98);
-	ofDrawCircle(0, 0, getRadius());
+	ofDrawCircle(0, 0, private_data->r);
+	ofNoFill();
+	ofSetColor(0, 0, 0);
+	ofDrawCircle(0, 0, private_data->r);
+	ofFill();
 	ofPopMatrix();
 }
 
@@ -128,7 +198,7 @@ void Bullet::draw()
 		ofPushMatrix();
 		ofTranslate(this->getPosition());
 		ofRotateRad(angle);
-		ofDrawRectangle(-private_data->r/2, -private_data->r, private_data->r, private_data->r*2);
+		ofDrawRectangle(-private_data->r / 2, -private_data->r, private_data->r, private_data->r * 2);
 		ofPopMatrix();
 		break;
 	default://round_white
@@ -171,21 +241,27 @@ ofVec2f Bullet::getPosition()
 	return private_data->pos;
 }
 
-Brick::Brick()
-{}
+Brick::Brick(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship)
+{
+	private_data = make_unique<GameObjectData>();
+	private_data->object_type = GameObjectData::brick;
+	private_data->is_hit = false;
+	private_data->can_remove = false;
+	private_data->pos = ofVec2f(_x, _y);
+	private_data->vec = ofVec2f(0, _v_y);
+	private_data->bullet_speed_rate = 1.0;
+	myship_copy = _myship;
+}
 
 Brick::~Brick()
 {}
 
 void Brick::draw()
 {
-	float width = getWidth();
-	float height = getHeight();
-
 	ofPushMatrix();
 
-	ofTranslate(getPosition());
-	ofSetColor(255, 214, 98);
+	ofTranslate(private_data->pos);
+	ofSetColor(255, 0, 0);
 	ofSetLineWidth(2.0);
 	ofDrawLine(-width / 2, -height / 2, width / 2, -height / 2);
 	ofDrawLine(width / 2, -height / 2, width / 2, height / 2);
@@ -206,9 +282,9 @@ void Brick::draw()
 
 void Brick::update()
 {
-	setPosition(getPosition() + private_data->vec);
+	private_data->pos += private_data->vec;
 
-	if (this->getPosition().y > 720 + 50 || this->getPosition().y < -50 || private_data->is_hit) {
+	if (this->private_data->pos.y > 720 + 50 || this->private_data->pos.y < -50 || private_data->is_hit) {
 		//makeBullet();
 		private_data->can_remove = true;
 	}
@@ -307,10 +383,6 @@ void MyShip::update()
 
 void MyShip::draw()
 {
-	if (private_data->is_hit) ofDrawBitmapString("Hit", 1280 / 2, 720 - 150);
-	if (life == 3) ofDrawBitmapString("LIFE:3", 1280 / 2, 720 - 100);
-	if (life == 2) ofDrawBitmapString("LIFE:2", 1280 / 2, 720 - 100);
-	if (life == 1) ofDrawBitmapString("LIFE:1", 1280 / 2, 720 - 100);
 
 	ofNoFill();
 

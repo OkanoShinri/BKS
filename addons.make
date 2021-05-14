@@ -1,2 +1,1 @@
-ofxBox2d
 ofxJoystick
