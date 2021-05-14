@@ -7,11 +7,16 @@ Ball::Ball(float _x, float _y, float _radius, int width, int height, float _se_v
 	private_data->is_hit = false;
 	private_data->can_remove = false;
 	private_data->pos = ofVec2f(_x, _y);
-	private_data->vec = ofVec2f(2, 2);
+	private_data->vec = ofVec2f(speed, speed);
 	private_data->r = _radius;
 
 	window_width = width;
 	window_height = height;
+
+	brick_hit_se = std::make_unique<ofSoundPlayer>();
+	brick_hit_se->load("se02.mp3");
+	brick_hit_se->setVolume(_se_volume);
+	brick_hit_se->setMultiPlay(true);
 
 	wall_hit_se = std::make_unique<ofSoundPlayer>();
 	wall_hit_se->load("se01.mp3");
@@ -26,9 +31,9 @@ Ball::~Ball()
 void Ball::update()
 {
 	private_data->pos += private_data->vec;
-	
+
 	if ((private_data->pos.x - private_data->r) < window_width / 4) {
-		private_data->pos.x = window_width  / 4 + private_data->r;
+		private_data->pos.x = window_width / 4 + private_data->r;
 		private_data->vec.x *= -1;
 		wall_hit_se->play();
 	}
@@ -51,8 +56,37 @@ void Ball::update()
 
 bool Ball::isHit(ofVec2f pos, ofVec2f shape)
 {
-	if ((pos-private_data->pos).length()<42)
+	if (
+		pos.x - shape.x / 2 - private_data->r < private_data->pos.x && private_data->pos.x < pos.x + shape.x / 2 + private_data->r
+		&&
+		pos.y - shape.y / 2 - private_data->r < private_data->pos.y && private_data->pos.y < pos.y + shape.y / 2 + private_data->r
+		)
 	{
+		if (pos.x - shape.x / 2 < private_data->pos.x && private_data->pos.x < pos.x + shape.x / 2)
+		{
+			private_data->vec.y *= -1;
+		}
+		else if (pos.y - shape.y / 2 < private_data->pos.y && private_data->pos.y < pos.y + shape.y / 2)
+		{
+			private_data->vec.x *= -1;
+		}
+		else if (private_data->pos.x < pos.x - shape.x / 2 && private_data->pos.y < pos.y - shape.y / 2)
+		{
+			private_data->vec = ofVec2f(-speed, -speed);
+		}
+		else if (pos.x + shape.x / 2 < private_data->pos.x && private_data->pos.y < pos.y - shape.y / 2)
+		{
+			private_data->vec = ofVec2f(speed, -speed);
+		}
+		else if (pos.x + shape.x / 2 < private_data->pos.x &&  pos.y + shape.y / 2 < private_data->pos.y)
+		{
+			private_data->vec = ofVec2f(speed, speed);
+		}
+		else if (private_data->pos.x < pos.x - shape.x / 2 && pos.y + shape.y / 2 < private_data->pos.y)
+		{
+			private_data->vec = ofVec2f(-speed, speed);
+		}
+		brick_hit_se->play();
 		return true;
 	}
 	return false;
@@ -159,7 +193,7 @@ void Bullet::draw()
 		ofPushMatrix();
 		ofTranslate(this->getPosition());
 		ofRotateRad(angle);
-		ofDrawRectangle(-private_data->r/2, -private_data->r, private_data->r, private_data->r*2);
+		ofDrawRectangle(-private_data->r / 2, -private_data->r, private_data->r, private_data->r * 2);
 		ofPopMatrix();
 		break;
 	default://round_white

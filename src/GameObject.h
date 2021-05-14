@@ -99,9 +99,10 @@ class Ball
 {
 private:
 	std::unique_ptr<GameObjectData> private_data;
-	std::unique_ptr<ofSoundPlayer> wall_hit_se;
+	std::unique_ptr<ofSoundPlayer> brick_hit_se,wall_hit_se;
 	int window_width;
 	int window_height;
+	float speed = 3.0;
 public:
 	Ball(float _x, float _y, float _radius, int width, int height, float _se_volume);
 	~Ball();

@@ -19,7 +19,7 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 		this->balls.emplace_back(std::make_unique<Ball>(
 			setting_parameter->window_width / 2,
 			100 + 10 * i,
-			10,
+			15,
 			setting_parameter->window_width,
 			setting_parameter->window_height,
 			setting_parameter->se_volume));
@@ -35,11 +35,6 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 	verdana = std::make_unique<ofTrueTypeFont>();
 	verdana->load("verdana.ttf", 30);
 	back_ground = std::make_unique<BackGroundImage>();
-
-	brick_hit_se = std::make_unique<ofSoundPlayer>();
-	brick_hit_se->load("se02.mp3");
-	brick_hit_se->setVolume(setting_parameter->se_volume);
-	brick_hit_se->setMultiPlay(true);
 
 	shot_se = std::make_unique<ofSoundPlayer>();
 	shot_se->load("shotse01.mp3");
@@ -167,6 +162,20 @@ void GameScene::update()
 		//transition_counter = 0;
 	}
 
+	//-------ball updata---------
+	ofSetColor(255, 214, 98);
+	for (auto it = this->balls.begin(); it != this->balls.end();)
+	{
+		(*it)->update();
+		if ((*it)->canRemove())
+		{
+			it = this->balls.erase(it);
+		}
+		else {
+			++it;
+		}
+	}
+
 	//-------back ground------------
 	back_ground->updata();
 
@@ -186,7 +195,9 @@ void GameScene::draw()
 	ofSetColor(255, 100, 100);
 	for (auto it_brick = this->bricks.begin(); it_brick != this->bricks.end();)
 	{
-		(*it_brick)->update();
+		if (!is_transiting) {
+			(*it_brick)->update();
+		}
 
 		for (auto it_ball = this->balls.begin(); it_ball != this->balls.end(); ++it_ball)
 		{
@@ -214,16 +225,11 @@ void GameScene::draw()
 		}
 	}
 
-	//-------ball update&draw---------
+	//-------ball draw---------
 	ofSetColor(255, 214, 98);
 	for (auto it = this->balls.begin(); it != this->balls.end();)
 	{
-		(*it)->update();
-		if ((*it)->canRemove())
 		{
-			it = this->balls.erase(it);
-		}
-		else {
 			(*it)->draw();
 			++it;
 		}
