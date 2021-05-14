@@ -21,11 +21,15 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 
 	this->balls.clear();
 
-	float ball_speed = 2.0;
 	for (int i = 0; i < setting_parameter->num_ball; i++)
 	{
-		this->balls.emplace_back(std::make_unique<Ball>(setting_parameter->window_width / 2, 100 + 10 * i, 10,
-			ball_speed*cos(45 * DEG_TO_RAD + 2 * PI*i / setting_parameter->num_ball), ball_speed*sin(45 * DEG_TO_RAD + 2 * PI * i / setting_parameter->num_ball)));
+		this->balls.emplace_back(std::make_unique<Ball>(
+			setting_parameter->window_width / 2,
+			100 + 10 * i,
+			10,
+			setting_parameter->window_width,
+			setting_parameter->window_height,
+			setting_parameter->se_volume));
 	}
 
 	this->bricks.clear();
@@ -38,11 +42,6 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 	verdana = std::make_unique<ofTrueTypeFont>();
 	verdana->load("verdana.ttf", 30);
 	back_ground = std::make_unique<BackGroundImage>();
-
-	wall_hit_se = std::make_unique<ofSoundPlayer>();
-	wall_hit_se->load("se01.mp3");
-	wall_hit_se->setVolume(setting_parameter->se_volume);
-	wall_hit_se->setMultiPlay(true);
 
 	brick_hit_se = std::make_unique<ofSoundPlayer>();
 	brick_hit_se->load("se02.mp3");
@@ -167,7 +166,7 @@ void GameScene::update()
 	if (counter > 1200 && ((counter % 360) == 0)) {
 		this->bricks.emplace_back(std::move(brickFactory((int)ofRandom(3), true)));
 	}*/
-	
+
 	//-------myship update------------
 	this->myShip->update();
 	if (myShip->canRemove()) {

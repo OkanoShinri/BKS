@@ -45,7 +45,7 @@ private:
 	std::unique_ptr<SettingParameter> setting_parameter;
 	std::unique_ptr<BackGroundImage> back_ground;
 	std::shared_ptr<MyShip> myShip;
-	std::unique_ptr<ofSoundPlayer> game_bgm, wall_hit_se, brick_hit_se, shot_se;
+	std::unique_ptr<ofSoundPlayer> game_bgm,  brick_hit_se, shot_se;
 	SceneIdx next_scene = title_scene;
 	std::unique_ptr<ofTrueTypeFont> verdana;
 };

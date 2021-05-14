@@ -99,8 +99,11 @@ class Ball
 {
 private:
 	std::unique_ptr<GameObjectData> private_data;
+	std::unique_ptr<ofSoundPlayer> wall_hit_se;
+	int window_width;
+	int window_height;
 public:
-	Ball(float _x, float _y, float _radius, float _v_x, float _v_y);
+	Ball(float _x, float _y, float _radius, int width, int height, float _se_volume);
 	~Ball();
 	bool canRemove();
 	void draw();

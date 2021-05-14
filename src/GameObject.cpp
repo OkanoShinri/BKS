@@ -1,14 +1,22 @@
 #include "GameObject.h"
 
-Ball::Ball(float _x, float _y, float _radius, float _v_x, float _v_y)
+Ball::Ball(float _x, float _y, float _radius, int width, int height, float _se_volume)
 {
 	private_data = make_unique<GameObjectData>();
 	private_data->object_type = GameObjectData::ball;
 	private_data->is_hit = false;
 	private_data->can_remove = false;
 	private_data->pos = ofVec2f(_x, _y);
-	private_data->vec = ofVec2f(_v_x, _v_y);
+	private_data->vec = ofVec2f(2, 2);
 	private_data->r = _radius;
+
+	window_width = width;
+	window_height = height;
+
+	wall_hit_se = std::make_unique<ofSoundPlayer>();
+	wall_hit_se->load("se01.mp3");
+	wall_hit_se->setVolume(_se_volume);
+	wall_hit_se->setMultiPlay(true);
 }
 
 Ball::~Ball()
@@ -18,6 +26,27 @@ Ball::~Ball()
 void Ball::update()
 {
 	private_data->pos += private_data->vec;
+	
+	if ((private_data->pos.x - private_data->r) < window_width / 4) {
+		private_data->pos.x = window_width  / 4 + private_data->r;
+		private_data->vec.x *= -1;
+		wall_hit_se->play();
+	}
+	else if (window_width * 3 / 4 < (private_data->pos.x + private_data->r)) {
+		private_data->pos.x = window_width * 3 / 4 - private_data->r;
+		private_data->vec.x *= -1;
+		wall_hit_se->play();
+	}
+	else if ((private_data->pos.y - private_data->r) < 0) {
+		private_data->pos.y = private_data->r;
+		private_data->vec.y *= -1;
+		wall_hit_se->play();
+	}
+	else if (window_height < (private_data->pos.y + private_data->r)) {
+		private_data->pos.y = window_height - private_data->r;
+		private_data->vec.y *= -1;
+		wall_hit_se->play();
+	}
 }
 
 bool Ball::canRemove()
