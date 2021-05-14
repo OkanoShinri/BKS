@@ -102,9 +102,10 @@ private:
 	std::unique_ptr<ofSoundPlayer> brick_hit_se,wall_hit_se;
 	int window_width;
 	int window_height;
-	float speed = 3.0;
+	int radius = 10;
+	float speed;
 public:
-	Ball(float _x, float _y, float _radius, int width, int height, float _se_volume);
+	Ball(ofVec2f pos, ofVec2f vec, int width, int height, float _se_volume);
 	~Ball();
 	bool canRemove();
 	void draw();
@@ -120,15 +121,15 @@ class Brick
 protected:
 	std::unique_ptr<GameObjectData> private_data;
 	ofVec2f pos;
-	int width = 60;
-	int height = 60;
+	int width = 30;
+	int height = 30;
 	std::shared_ptr<MyShip> myship_copy;
 public:
 	Brick(float _x, float _y, float _v_y, std::shared_ptr<MyShip> _myship);
 	~Brick();
 	bool canRemove();
 	bool isHit();
-	void draw();
+	virtual void draw();
 	void update();
 	void setBulletSpeedRate(float _bullet_speed_rate) {
 		private_data->bullet_speed_rate = _bullet_speed_rate;
@@ -158,6 +159,29 @@ public:
 			std::make_unique<BulletData>(private_data->pos, ofVec2f(speed*(myship_copy->getPosition() - this->private_data->pos).normalize()), 10, 0, BulletData::triangle_black)
 		);
 		return bullets;
+	}
+	void draw()
+	{
+		ofPushMatrix();
+
+		ofTranslate(private_data->pos);
+		ofSetColor(255, 214, 98);
+		ofSetLineWidth(2.0);
+		ofDrawLine(-width / 2, -height / 2, width / 2, -height / 2);
+		ofDrawLine(width / 2, -height / 2, width / 2, height / 2);
+		ofDrawLine(width / 2, height / 2, -width / 2, height / 2);
+		ofDrawLine(-width / 2, height / 2, -width / 2, -height / 2);
+
+		ofFill();
+		ofSetColor(0, 0, 0);
+		ofDrawCircle(-width / 2, -height / 2, 2);
+		ofDrawCircle(width / 2, -height / 2, 2);
+		ofDrawCircle(width / 2, height / 2, 2);
+		ofDrawCircle(-width / 2, height / 2, 2);
+
+		ofPopMatrix();
+
+		ofFill();
 	}
 };
 

@@ -1,14 +1,15 @@
 #include "GameObject.h"
 
-Ball::Ball(float _x, float _y, float _radius, int width, int height, float _se_volume)
+Ball::Ball(ofVec2f pos, ofVec2f vec, int width, int height, float _se_volume)
 {
 	private_data = make_unique<GameObjectData>();
 	private_data->object_type = GameObjectData::ball;
 	private_data->is_hit = false;
 	private_data->can_remove = false;
-	private_data->pos = ofVec2f(_x, _y);
-	private_data->vec = ofVec2f(speed, speed);
-	private_data->r = _radius;
+	private_data->pos = pos;
+	private_data->vec = vec;
+	speed = vec.length();
+	private_data->r = radius;
 
 	window_width = width;
 	window_height = height;
@@ -104,6 +105,10 @@ void Ball::draw()
 	ofFill();
 	ofSetColor(255, 214, 98);
 	ofDrawCircle(0, 0, private_data->r);
+	ofNoFill();
+	ofSetColor(0, 0, 0);
+	ofDrawCircle(0, 0, private_data->r);
+	ofFill();
 	ofPopMatrix();
 }
 
@@ -256,7 +261,7 @@ void Brick::draw()
 	ofPushMatrix();
 
 	ofTranslate(private_data->pos);
-	ofSetColor(255, 214, 98);
+	ofSetColor(255, 0, 0);
 	ofSetLineWidth(2.0);
 	ofDrawLine(-width / 2, -height / 2, width / 2, -height / 2);
 	ofDrawLine(width / 2, -height / 2, width / 2, height / 2);

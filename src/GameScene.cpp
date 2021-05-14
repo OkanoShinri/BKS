@@ -14,12 +14,12 @@ GameScene::GameScene(std::unique_ptr<SettingParameter>&& _setting_parameter)
 
 	this->balls.clear();
 
+	int speed = 10;
 	for (int i = 0; i < setting_parameter->num_ball; i++)
 	{
 		this->balls.emplace_back(std::make_unique<Ball>(
-			setting_parameter->window_width / 2,
-			100 + 10 * i,
-			15,
+			ofVec2f(setting_parameter->window_width / 2, 100),
+			ofVec2f(cos(45 * DEG_TO_RAD + 2 * PI*i / setting_parameter->num_ball), sin(45 * DEG_TO_RAD + 2 * PI*i / setting_parameter->num_ball))*speed,
 			setting_parameter->window_width,
 			setting_parameter->window_height,
 			setting_parameter->se_volume));
@@ -118,27 +118,28 @@ void GameScene::update()
 	}
 
 	//-------add brick----------------
-	if (!(counter % 120))
+	if (!(counter % 30))
 	{
 		addBrick(0);
 	}
 	if (counter < 1800)
 	{
-		if (counter % 240 == 0)
+		if (counter % 120 == 0)
 		{
 			addBrick(std::rand() % 3);
 		}
+
 	}
 	else if (counter < 3600)
 	{
-		if (counter % 240 == 0)
+		if (counter % 90 == 0)
 		{
 			addBrick(std::rand() % 4 + 2);
 		}
 	}
 	else if (counter < 7200)
 	{
-		if (counter % 180 == 0)
+		if (counter % 90 == 0)
 		{
 			addBrick(std::rand() % 3 + 5);
 		}
@@ -150,10 +151,6 @@ void GameScene::update()
 			addBrick(std::rand() % 3 + 7);
 		}
 	}
-	/*
-	if (counter > 1200 && ((counter % 360) == 0)) {
-		this->bricks.emplace_back(std::move(brickFactory((int)ofRandom(3), true)));
-	}*/
 
 	//-------myship update------------
 	this->myShip->update();
