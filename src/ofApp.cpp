@@ -3,7 +3,6 @@
 //--------------------------------------------------------------
 void ofApp::setup() {
 	this->current_scene = sceneFactory(Scene::title_scene);
-	//this->setting_parameter = std::make_shared<SettingParameter>();
 }
 
 //--------------------------------------------------------------
@@ -20,7 +19,7 @@ void ofApp::update() {
 
 //--------------------------------------------------------------
 void ofApp::draw() {
-	this->current_scene->draw();	
+	this->current_scene->draw();
 }
 
 //--------------------------------------------------------------

@@ -11,13 +11,13 @@ protected:
 
 class BulletData {
 public:
+	bool is_homing;
 	enum BulletImageIdx { round_white = 0, round_black, triangle_white, triangle_black, needle_white, needle_brack };
 	BulletImageIdx bullet_img_type;
-	ofVec2f pos;
-	ofVec2f vec;
 	float r = 0;
 	int wait_time;
-	bool is_homing;
+	ofVec2f pos;
+	ofVec2f vec;
 
 	BulletData(ofVec2f _init_pos, ofVec2f _init_vec, float _r, int _wait_time, BulletImageIdx _bullet_img_type = round_white)
 		:pos(_init_pos), vec(_init_vec), r(_r), wait_time(_wait_time), bullet_img_type(_bullet_img_type), is_homing(false)
@@ -30,7 +30,7 @@ public:
 	}
 };
 
-class Bullet:public GameObject
+class Bullet :public GameObject
 {
 private:
 	bool can_remove = false;
@@ -103,7 +103,7 @@ private:
 	int window_width;
 	ofVec2f pos;
 	ofVec2f vec;
-	std::unique_ptr<ofSoundPlayer> brick_hit_se,wall_hit_se;
+	std::unique_ptr<ofSoundPlayer> brick_hit_se, wall_hit_se;
 public:
 	Ball(ofVec2f pos, ofVec2f vec, int width, int height, float _se_volume);
 	~Ball();

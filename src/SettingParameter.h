@@ -14,5 +14,5 @@ struct SettingParameter
 	int window_width = 1280;
 	int num_ball = 1;
 	int MAX_BALL = 10;
-	std::string version = "0.95";
+	std::string version = "0.96";
 };

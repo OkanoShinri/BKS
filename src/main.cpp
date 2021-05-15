@@ -8,11 +8,6 @@ int main() {
 	settings.resizable = false;
 	ofCreateWindow(settings);
 
-	//ofSetupOpenGL(1920, 1080, OF_FULLSCREEN);
-	//ofSetupOpenGL(1280, 720, OF_WINDOW);
-
-	//ofSetVerticalSync(false);
-	//ofSetFrameRate(60);
 	ofSetVerticalSync(true);
 
 	ofRunApp(new ofApp());

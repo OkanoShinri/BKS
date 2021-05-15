@@ -128,7 +128,6 @@ void GameScene::update()
 		{
 			addBrick(std::rand() % 3);
 		}
-
 	}
 	else if (counter < 3600)
 	{
@@ -156,7 +155,6 @@ void GameScene::update()
 	this->myShip->update();
 	if (myShip->canRemove()) {
 		is_transiting = true;
-		//transition_counter = 0;
 	}
 
 	//-------ball updata---------
@@ -231,11 +229,7 @@ void GameScene::draw()
 			++it;
 		}
 	}
-
-	//-------paddle update&draw-------
-	//this->myPaddle->setPosition(this->myShip->getPosition());
-	//this->myPaddle->draw();
-
+	
 	//-------bullets update&draw------
 	ofSetColor(10, 10, 10);
 	for (auto it = this->active_bullets.begin(); it != this->active_bullets.end();)
@@ -272,7 +266,6 @@ void GameScene::draw()
 	this->myShip->draw();
 
 	//-------side infos---------------
-	//ofSetColor(0, 122, 204);
 	ofSetColor(0, 0, 0);
 	ofDrawRectangle(0, 0, setting_parameter->window_width / 4, setting_parameter->window_height);
 	ofDrawRectangle(setting_parameter->window_width * 3 / 4, 0, setting_parameter->window_width / 4, setting_parameter->window_height);
@@ -302,8 +295,6 @@ void GameScene::draw()
 	ofDrawBitmapString("se:  " + se_param.str(), 100, setting_parameter->window_height / 2 + 50);
 
 	ofDrawBitmapString(ofToString(ofGetFrameRate()) + "fps", 20, setting_parameter->window_height - 50);
-
-	//drawHowToPlay(10, 10);
 
 	//-------transition_in------------
 	if (counter < 30)
@@ -353,12 +344,8 @@ void GameScene::keyPressed(int key) {
 void GameScene::keyReleased(int key)
 {
 	this->myShip->keyReleased(key);
-	if (key == 'p') {
-		//activate_paddle = !activate_paddle;
-	}
 }
 
 void GameScene::mouseMoved(int x, int y)
 {
-	//this->myShip->mouseMoved(x, y);
 }

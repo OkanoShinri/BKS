@@ -2,15 +2,14 @@
 
 Ball::Ball(ofVec2f pos, ofVec2f vec, int width, int height, float _se_volume)
 {
-	object_type = ball;
 	is_hit = false;
+	object_type = ball;
+	r = radius;
+	speed = vec.length();
 	this->pos = pos;
 	this->vec = vec;
-	speed = vec.length();
-	r = radius;
-
-	window_width = width;
 	window_height = height;
+	window_width = width;
 
 	brick_hit_se = std::make_unique<ofSoundPlayer>();
 	brick_hit_se->load("se02.mp3");
@@ -278,7 +277,6 @@ void Brick::update()
 	pos += vec;
 
 	if (this->pos.y > 720 + 50 || this->pos.y < -50 || is_hit) {
-		//makeBullet();
 		can_remove = true;
 	}
 }
@@ -366,7 +364,6 @@ void MyShip::update()
 		if (hit_anime_counter > 0) {
 			return;
 		}
-		//else
 		life--;
 		hit_se->play();
 		hit_anime_counter = 60;

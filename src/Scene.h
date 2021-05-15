@@ -25,7 +25,6 @@ public:
 	virtual void mouseReleased(int x, int y, int button) {};
 	virtual void update() {};
 	virtual void windowResized(int w, int h) {};
-
 };
 
 class QuitScene :public Scene {

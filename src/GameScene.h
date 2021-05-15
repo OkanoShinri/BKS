@@ -31,7 +31,6 @@ private:
 	void mouseMoved(int x, int y);
 	void update();
 
-	//bool activate_paddle = false;
 	int counter = 0;
 	int finish_time = 0;
 	int transition_counter = 0;
@@ -45,7 +44,7 @@ private:
 	std::unique_ptr<SettingParameter> setting_parameter;
 	std::unique_ptr<BackGroundImage> back_ground;
 	std::shared_ptr<MyShip> myShip;
-	std::unique_ptr<ofSoundPlayer> game_bgm,   shot_se;
+	std::unique_ptr<ofSoundPlayer> game_bgm, shot_se;
 	SceneIdx next_scene = title_scene;
 	std::unique_ptr<ofTrueTypeFont> verdana;
 };
