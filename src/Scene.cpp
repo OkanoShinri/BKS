@@ -252,7 +252,7 @@ void SettingScene::update()
 		{
 			push_counter2 = 0;
 		}
-		
+
 		if (push_counter2 == 1 || joy_.isPressed(0)) {
 			toggle_fullscreen();
 		}
@@ -329,7 +329,7 @@ void SettingScene::draw()
 	Oranienbaum->drawString("ON", fullscreen_pos.x * 4, fullscreen_pos.y);
 	Oranienbaum->drawString("OFF", fullscreen_pos.x * 6, fullscreen_pos.y);
 	if (setting_parameter->is_fullscreen) {
-		ofDrawRectangle(fullscreen_pos.x * 4-15, fullscreen_pos.y - 40, 75, 50);
+		ofDrawRectangle(fullscreen_pos.x * 4 - 15, fullscreen_pos.y - 40, 75, 50);
 		Oranienbaum->drawString("OFF", fullscreen_pos.x * 6, fullscreen_pos.y);
 		ofSetColor(255, 255, 255);
 		Oranienbaum->drawString("ON", fullscreen_pos.x * 4, fullscreen_pos.y);
@@ -343,8 +343,8 @@ void SettingScene::draw()
 	ofSetColor(0, 0, 0);
 
 	Oranienbaum->drawString("Number of balls", num_of_balls_pos.x, num_of_balls_pos.y);
-	Oranienbaum->drawString(std::to_string(setting_parameter->num_ball), num_of_balls_pos.x*5, num_of_balls_pos.y);
-	
+	Oranienbaum->drawString(std::to_string(setting_parameter->num_ball), num_of_balls_pos.x * 5, num_of_balls_pos.y);
+
 	Oranienbaum->drawString("Return", return_pos.x, return_pos.y);
 
 	//----------cursor----------------
@@ -401,7 +401,7 @@ void SettingScene::keyPressed(int key)
 		choice_idx = (choice_idx + 4) % 5;
 		break;
 	case OF_KEY_LEFT:
-		if (choice_idx==0)
+		if (choice_idx == 0)
 		{
 			setting_parameter->bgm_volume -= 0.02;
 		}
@@ -446,7 +446,7 @@ void SettingScene::keyPressed(int key)
 			this->is_transiting = true;
 			this->transition_counter = 0;
 		}
-		
+
 		break;
 	}
 	if (setting_parameter->num_ball < 1)
@@ -457,7 +457,6 @@ void SettingScene::keyPressed(int key)
 	{
 		setting_parameter->num_ball = setting_parameter->MAX_BALL;
 	}
-
 }
 
 void SettingScene::toggle_fullscreen()

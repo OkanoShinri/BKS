@@ -1,1 +1,0 @@
-#include "SettingParameter.h"
