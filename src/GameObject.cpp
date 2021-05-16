@@ -308,13 +308,8 @@ MyShip::MyShip() :
 
 void MyShip::update()
 {
-	if (counter < 1000000) {
-		counter++;
-	}
-	else {
-		counter = 0;
-	}
-
+	counter++;
+	
 	if (hit_anime_counter > 0) {
 		hit_anime_counter--;
 	}
